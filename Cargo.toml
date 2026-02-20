@@ -8,3 +8,5 @@ name = "robinson-group-rust-template"
 version = "0.1.0"
 
 [dependencies]
+thiserror = "2.0.18"
+maplit = "1.0.2"

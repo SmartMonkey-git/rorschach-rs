@@ -1,0 +1,12 @@
+pub mod answer;
+pub mod available_tests;
+pub mod diagnosis;
+pub mod error;
+pub mod phenotype;
+pub mod questionnaire;
+pub mod questionnaire_item;
+pub mod questionnaire_result;
+mod rorschach;
+pub mod score_calculations;
+pub mod term;
+pub mod traits;
