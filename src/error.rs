@@ -7,8 +7,8 @@ pub enum RorschachError {
     )]
     TotalScoreTooHigh {
         test_name: String,
-        max_score: usize,
-        found_score: usize,
+        max_score: f32,
+        found_score: f32,
     },
     #[error("'{test_name}' has {expected} questions, but got {found} answers.")]
     AnswerQuestionMismatch {
@@ -17,5 +17,5 @@ pub enum RorschachError {
         found: usize,
     },
     #[error("No diagnostic interpretation found for a score of {found_score}.")]
-    NoMatchingDiagnosis { found_score: usize },
+    NoMatchingDiagnosis { found_score: f32 },
 }

@@ -15,14 +15,14 @@ impl QuestionnaireItem {
         Self { stem, phenotypes }
     }
 
-    pub fn answer(&self, answer: usize) -> &[Phenotype] {
+    pub fn answer(&self, answer_idx: usize) -> &[Phenotype] {
         self.phenotypes
-            .get(&answer)
+            .get(&answer_idx)
             .map(|v| v.as_slice())
             .unwrap_or(&[])
     }
 
-    pub fn max_score(&self) -> usize {
-        self.phenotypes.len()
+    pub fn max_score(&self) -> f32 {
+        self.phenotypes.len() as f32
     }
 }

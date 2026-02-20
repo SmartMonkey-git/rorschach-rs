@@ -1,5 +1,5 @@
 use std::fmt::Debug;
 
-pub trait CalculateScore: Debug + PartialEq {
+pub trait CalculateScore: Debug {
     fn calculate_score(&self, scores: &[f32]) -> f32;
 }

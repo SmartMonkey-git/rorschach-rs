@@ -1,4 +1,5 @@
 use crate::term::Term;
+use std::fmt;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Diagnosis {
@@ -18,6 +19,15 @@ impl Diagnosis {
         Self {
             term: term.into(),
             severity: None,
+        }
+    }
+}
+
+impl fmt::Display for Diagnosis {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match &self.severity {
+            Some(severity) => write!(f, "{} ({})", self.term, severity),
+            None => write!(f, "{}", self.term),
         }
     }
 }

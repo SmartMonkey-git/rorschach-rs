@@ -1,3 +1,5 @@
+use std::fmt;
+
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct Term {
     id: String,
@@ -10,6 +12,12 @@ impl Term {
             id: id.into(),
             label: label.into(),
         }
+    }
+}
+
+impl fmt::Display for Term {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{} [{}]", self.label, self.id)
     }
 }
 

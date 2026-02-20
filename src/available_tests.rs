@@ -4,10 +4,10 @@ use crate::questionnaire::Questionnaire;
 use crate::questionnaire_item::QuestionnaireItem;
 use crate::score_calculations::sum_score::SumScore;
 use crate::term::{DiagnosisTerms, PhenotypeTerms, SeverityTerms};
-use crate::traits::CalculateScore;
+use chrono::Duration;
 use maplit::{btreemap, hashmap};
 
-enum AvailableTest {
+pub enum AvailableTest {
     PHQ9,
 }
 
@@ -19,57 +19,58 @@ impl AvailableTest {
                     Some("Little interest or pleasure in doing things".to_string()),
                     hashmap! {
                             0 => vec![],
-                            1 => vec![Phenotype::new(PhenotypeTerms::Anhedonia, SeverityTerms::Mild)],
-                            2 => vec![Phenotype::new(PhenotypeTerms::Anhedonia, SeverityTerms::Moderate)],
-                            3 => vec![Phenotype::new(PhenotypeTerms::Anhedonia, SeverityTerms::Severe)],
+                            1 => vec![Phenotype::without_time(PhenotypeTerms::Anhedonia, SeverityTerms::Mild)],
+                            2 => vec![Phenotype::without_time(PhenotypeTerms::Anhedonia, SeverityTerms::Moderate)],
+                            3 => vec![Phenotype::without_time(PhenotypeTerms::Anhedonia, SeverityTerms::Severe)],
                         },
                 ),
                 QuestionnaireItem::new(
                     Some("Feeling down, depressed, or hopeless".to_string()),
                     hashmap! {
                             0 => vec![],
-                            1 => vec![Phenotype::new(PhenotypeTerms::Depression, SeverityTerms::Mild)],
-                            2 => vec![Phenotype::new(PhenotypeTerms::Depression, SeverityTerms::Moderate)],
-                            3 => vec![Phenotype::new(PhenotypeTerms::Depression, SeverityTerms::Severe)],
+                            1 => vec![Phenotype::without_time(PhenotypeTerms::Depression, SeverityTerms::Mild)],
+                            2 => vec![Phenotype::without_time(PhenotypeTerms::Depression, SeverityTerms::Moderate)],
+                            3 => vec![Phenotype::without_time(PhenotypeTerms::Depression, SeverityTerms::Severe)],
                         },
                 ),
                 QuestionnaireItem::new(
                     Some("Trouble falling or staying asleep, or sleeping too much".to_string()),
                     hashmap! {
                             0 => vec![],
-                            1 => vec![Phenotype::new(PhenotypeTerms::SleepDisturbance, SeverityTerms::Mild)],
-                            2 => vec![Phenotype::new(PhenotypeTerms::SleepDisturbance, SeverityTerms::Moderate)],
-                            3 => vec![Phenotype::new(PhenotypeTerms::SleepDisturbance, SeverityTerms::Severe)],
+                            1 => vec![Phenotype::without_time(PhenotypeTerms::SleepDisturbance, SeverityTerms::Mild)],
+                            2 => vec![Phenotype::without_time(PhenotypeTerms::SleepDisturbance, SeverityTerms::Moderate)],
+                            3 => vec![Phenotype::without_time(PhenotypeTerms::SleepDisturbance, SeverityTerms::Severe)],
                         },
                 ),
                 QuestionnaireItem::new(
                     Some("Feeling tired or having little energy".to_string()),
                     hashmap! {
                             0 => vec![],
-                            1 => vec![Phenotype::new(PhenotypeTerms::Fatigue, SeverityTerms::Mild)],
-                            2 => vec![Phenotype::new(PhenotypeTerms::Fatigue, SeverityTerms::Moderate)],
-                            3 => vec![Phenotype::new(PhenotypeTerms::Fatigue, SeverityTerms::Severe)],
+                            1 => vec![Phenotype::without_time(PhenotypeTerms::Fatigue, SeverityTerms::Mild)],
+                            2 => vec![Phenotype::without_time(PhenotypeTerms::Fatigue, SeverityTerms::Moderate)],
+                            3 => vec![Phenotype::without_time(PhenotypeTerms::Fatigue, SeverityTerms::Severe)],
                         },
                 ),
                 QuestionnaireItem::new(
                     Some("Poor appetite or overeating".to_string()),
                     hashmap! {
                             0 => vec![],
-                            1 => vec![Phenotype::new(PhenotypeTerms::AbnormalEatingBehavior, SeverityTerms::Mild)],
-                            2 => vec![Phenotype::new(PhenotypeTerms::AbnormalEatingBehavior, SeverityTerms::Moderate)],
-                            3 => vec![Phenotype::new(PhenotypeTerms::AbnormalEatingBehavior, SeverityTerms::Severe)],
+                            1 => vec![Phenotype::without_time(PhenotypeTerms::AbnormalEatingBehavior, SeverityTerms::Mild)],
+                            2 => vec![Phenotype::without_time(PhenotypeTerms::AbnormalEatingBehavior, SeverityTerms::Moderate)],
+                            3 => vec![Phenotype::without_time(PhenotypeTerms::AbnormalEatingBehavior, SeverityTerms::Severe)],
                         },
                 ),
                 QuestionnaireItem::new(
                     Some("Feeling bad about yourself — or that you are a failure or have let yourself or your family down".to_string()),
                     hashmap! {
                             0 => vec![],
-                            1 => vec![Phenotype::new(PhenotypeTerms::Guilt, SeverityTerms::Mild), Phenotype::new(PhenotypeTerms::LowSelfEsteem, SeverityTerms::Mild)],
-                            2 => vec![Phenotype::new(PhenotypeTerms::Guilt, SeverityTerms::Moderate), Phenotype::new(PhenotypeTerms::LowSelfEsteem, SeverityTerms::Moderate)],
-                            3 => vec![Phenotype::new(PhenotypeTerms::Guilt, SeverityTerms::Severe), Phenotype::new(PhenotypeTerms::LowSelfEsteem, SeverityTerms::Severe)],
+                            1 => vec![Phenotype::without_time(PhenotypeTerms::Guilt, SeverityTerms::Mild), Phenotype::without_time(PhenotypeTerms::LowSelfEsteem, SeverityTerms::Mild)],
+                            2 => vec![Phenotype::without_time(PhenotypeTerms::Guilt, SeverityTerms::Moderate), Phenotype::without_time(PhenotypeTerms::LowSelfEsteem, SeverityTerms::Moderate)],
+                            3 => vec![Phenotype::without_time(PhenotypeTerms::Guilt, SeverityTerms::Severe), Phenotype::without_time(PhenotypeTerms::LowSelfEsteem, SeverityTerms::Severe)],
                         },
                 ),
                 QuestionnaireItem::new(
+                    //TODO: Find fitting phenotypes
                     Some("Trouble concentrating on things, such as reading the newspaper or watching television".to_string()),
                     hashmap! {
                             0 => vec![],
@@ -82,18 +83,18 @@ impl AvailableTest {
                     Some("Moving or speaking so slowly that other people could have noticed? Or the opposite — being so fidgety or restless that you have been moving around a lot more than usual".to_string()),
                     hashmap! {
                             0 => vec![],
-                            1 => vec![Phenotype::new(PhenotypeTerms::AbnormalVolitionalState, SeverityTerms::Mild)],
-                            2 => vec![Phenotype::new(PhenotypeTerms::AbnormalVolitionalState, SeverityTerms::Moderate)],
-                            3 => vec![Phenotype::new(PhenotypeTerms::AbnormalVolitionalState, SeverityTerms::Severe)],
+                            1 => vec![Phenotype::without_time(PhenotypeTerms::AbnormalVolitionalState, SeverityTerms::Mild)],
+                            2 => vec![Phenotype::without_time(PhenotypeTerms::AbnormalVolitionalState, SeverityTerms::Moderate)],
+                            3 => vec![Phenotype::without_time(PhenotypeTerms::AbnormalVolitionalState, SeverityTerms::Severe)],
                         },
                 ),
                 QuestionnaireItem::new(
                     Some("Thoughts that you would be better off dead or of hurting yourself in some way".to_string()),
                     hashmap! {
                             0 => vec![],
-                            1 => vec![Phenotype::new(PhenotypeTerms::SuicidalIdeation, SeverityTerms::Mild), Phenotype::new(PhenotypeTerms::LowSelfEsteem, SeverityTerms::Mild)],
-                            2 => vec![Phenotype::new(PhenotypeTerms::SuicidalIdeation, SeverityTerms::Moderate), Phenotype::new(PhenotypeTerms::LowSelfEsteem, SeverityTerms::Moderate)],
-                            3 => vec![Phenotype::new(PhenotypeTerms::SuicidalIdeation, SeverityTerms::Severe), Phenotype::new(PhenotypeTerms::LowSelfEsteem, SeverityTerms::Severe)],
+                            1 => vec![Phenotype::without_time(PhenotypeTerms::SuicidalIdeation, SeverityTerms::Mild), Phenotype::without_time(PhenotypeTerms::LowSelfEsteem, SeverityTerms::Mild)],
+                            2 => vec![Phenotype::without_time(PhenotypeTerms::SuicidalIdeation, SeverityTerms::Moderate), Phenotype::without_time(PhenotypeTerms::LowSelfEsteem, SeverityTerms::Moderate)],
+                            3 => vec![Phenotype::without_time(PhenotypeTerms::SuicidalIdeation, SeverityTerms::Severe), Phenotype::without_time(PhenotypeTerms::LowSelfEsteem, SeverityTerms::Severe)],
                         },
                 ),
             ], btreemap! {
@@ -103,7 +104,9 @@ impl AvailableTest {
                     10 => Some(Diagnosis::new(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Moderate)),
                     15 => Some(Diagnosis::new(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Severe)),
                     20 => Some(Diagnosis::new(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Severe)),
-            }, SumScore),
+            }, SumScore,
+            Some(Duration::weeks(2))
+            ),
         }
     }
 }

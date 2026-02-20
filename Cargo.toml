@@ -10,3 +10,8 @@ version = "0.1.0"
 [dependencies]
 thiserror = "2.0.18"
 maplit = "1.0.2"
+chrono = "0.4.41"
+
+
+[dev-dependencies]
+polars = "0.53.0"
