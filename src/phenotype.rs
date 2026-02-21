@@ -49,6 +49,20 @@ impl Phenotype {
     pub fn set_observed_end(&mut self, observed_end: Option<DateTime<Utc>>) {
         self.observed_end = observed_end;
     }
+
+    pub fn r#type(&self) -> &Term {
+        &self.r#type
+    }
+    pub fn severity(&self) -> Option<&Term> {
+        self.severity.as_ref()
+    }
+
+    pub fn observed_start(&self) -> Option<&DateTime<Utc>> {
+        self.observed_start.as_ref()
+    }
+    pub fn observed_end(&self) -> Option<&DateTime<Utc>> {
+        self.observed_end.as_ref()
+    }
 }
 
 impl fmt::Display for Phenotype {

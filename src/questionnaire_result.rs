@@ -27,11 +27,25 @@ impl QuestionnaireResult {
         }
     }
 
+    pub fn id(&self) -> &str {
+        &self.id
+    }
     pub fn set_taken_at(&mut self, taken_at: Option<DateTime<Utc>>) {
         self.taken_at = taken_at;
     }
     pub fn push_phenotypes(&mut self, terms: Vec<Phenotype>) {
         self.phenotypes.extend(terms);
+    }
+
+    pub fn phenotypes(&self) -> &HashSet<Phenotype> {
+        &self.phenotypes
+    }
+    pub fn diagnosis(&self) -> Option<&Diagnosis> {
+        self.diagnosis.as_ref()
+    }
+
+    pub fn taken_at(&self) -> Option<DateTime<Utc>> {
+        self.taken_at
     }
 }
 

@@ -21,6 +21,13 @@ impl Diagnosis {
             severity: None,
         }
     }
+
+    pub fn term(&self) -> &Term {
+        &self.term
+    }
+    pub fn severity(&self) -> Option<&Term> {
+        self.severity.as_ref()
+    }
 }
 
 impl fmt::Display for Diagnosis {
