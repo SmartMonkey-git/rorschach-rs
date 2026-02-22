@@ -4,6 +4,7 @@ use crate::questionnaire::Questionnaire;
 use crate::questionnaire_item::QuestionnaireItem;
 use crate::score_calculations::sum_score::SumScore;
 use crate::term::{DiagnosisTerms, PhenotypeTerms, SeverityTerms};
+use crate::traits::EvaluateQuestionnaire;
 use chrono::Duration;
 use maplit::{btreemap, hashmap};
 
@@ -12,7 +13,7 @@ pub enum AvailableTest {
 }
 
 impl AvailableTest {
-    pub fn build(&self) -> Questionnaire {
+    pub fn build(&self) -> impl EvaluateQuestionnaire {
         match self {
             AvailableTest::PHQ9 => Questionnaire::new("PATIENT HEALTH (PHQ-9) QUESTIONNAIRE-9".to_string(), vec![
                 QuestionnaireItem::new(

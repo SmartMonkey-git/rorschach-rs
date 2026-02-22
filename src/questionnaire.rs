@@ -4,7 +4,7 @@ use crate::error::RorschachError;
 use crate::phenotype::Phenotype;
 use crate::questionnaire_item::QuestionnaireItem;
 use crate::questionnaire_result::QuestionnaireResult;
-use crate::traits::CalculateScore;
+use crate::traits::{CalculateScore, EvaluateQuestionnaire};
 use chrono::{DateTime, Duration, Utc};
 use std::collections::{BTreeMap, HashSet};
 
@@ -48,9 +48,8 @@ impl Questionnaire {
             .calculate_score(max_item_scores.as_slice())
     }
 }
-
-impl Questionnaire {
-    pub fn evaluate(
+impl EvaluateQuestionnaire for Questionnaire {
+    fn evaluate(
         &self,
         questionnaire_id: &str,
         answers: &[Answer],
@@ -102,7 +101,9 @@ impl Questionnaire {
 
         Ok(result)
     }
+}
 
+impl Questionnaire {
     fn get_diagnosis(&self, total_score: f32) -> Result<Option<Diagnosis>, RorschachError> {
         let (_, diagnosis) = self
             .interpretation
