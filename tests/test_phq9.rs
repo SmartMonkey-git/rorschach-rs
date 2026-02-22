@@ -1,13 +1,13 @@
 use chrono::NaiveDateTime;
+use chrono::{DateTime, Utc};
 use polars::prelude::{CsvParseOptions, CsvReadOptions, CsvReader, NullValues, SerReader};
 use robinson_group_rust_template::answer::Answer;
 use robinson_group_rust_template::available_tests::AvailableTest;
 use robinson_group_rust_template::questionnaire_result::QuestionnaireResult;
+use serde::Serialize;
 use std::error::Error;
 use std::fs::File;
-
-use chrono::{DateTime, Utc};
-use serde::Serialize;
+use std::path::PathBuf;
 
 #[derive(Serialize)]
 pub struct DiagnosisRow<'a> {
@@ -30,10 +30,16 @@ pub struct PhenotypeRow<'a> {
     pub observed_end: Option<DateTime<Utc>>,
 }
 
+fn get_data_path(filename: &str) -> PathBuf {
+    dirs::home_dir()
+        .expect("Could not find home directory")
+        .join("data/phq9")
+        .join(filename)
+}
 pub fn export_to_csvs(results: &[QuestionnaireResult]) -> Result<(), Box<dyn Error>> {
     // Initialize the CSV writers
-    let mut diagnosis_wtr = csv::Writer::from_path("/Users/smart_monkey/data/phq9/diagnoses.csv")?;
-    let mut phenotype_wtr = csv::Writer::from_path("/Users/smart_monkey/data/phq9/phenotypes.csv")?;
+    let mut diagnosis_wtr = csv::Writer::from_path(get_data_path("diagnoses.csv"))?;
+    let mut phenotype_wtr = csv::Writer::from_path(get_data_path("phenotypes.csv"))?;
 
     for res in results {
         // 1. Process Diagnoses
@@ -73,10 +79,10 @@ pub fn export_to_csvs(results: &[QuestionnaireResult]) -> Result<(), Box<dyn Err
 
 #[test]
 fn test_integration_declared_version() {
-    let phq9_patent_data = File::open("/Users/smart_monkey/data/phq9/phq9_questioner_data.csv")
-        .expect("Could not open file");
-    let phq9_questioner_data = File::open("/Users/smart_monkey/data/phq9/phq9_questioner_data.csv")
-        .expect("Could not open file");
+    let phq9_patent_data =
+        File::open(get_data_path("phq9_questioner_data.csv")).expect("Could not open file");
+    let phq9_questioner_data =
+        File::open(get_data_path("phq9_questioner_data.csv")).expect("Could not open file");
 
     // 2. Read the CSV into a DataFrame
     let parse_options = CsvParseOptions::default()
