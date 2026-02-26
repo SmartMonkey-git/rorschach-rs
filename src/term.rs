@@ -47,6 +47,7 @@ pub enum PhenotypeTerms {
     Guilt,
     AbnormalVolitionalState,
     SuicidalIdeation,
+    DiminishedAbilityToConcentrate,
 }
 
 impl PhenotypeTerms {
@@ -69,6 +70,9 @@ impl PhenotypeTerms {
                 "Suicidal ideation
 ",
             ),
+            PhenotypeTerms::DiminishedAbilityToConcentrate => {
+                Term::new("HP:0031987", "Diminished ability to concentrate")
+            }
         }
     }
 }

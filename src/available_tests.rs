@@ -70,13 +70,12 @@ impl AvailableTest {
                         },
                 ),
                 QuestionnaireItem::new(
-                    //TODO: Find fitting phenotypes
                     Some("Trouble concentrating on things, such as reading the newspaper or watching television".to_string()),
                     hashmap! {
                             0 => vec![],
-                            1 => vec![],
-                            2 => vec![],
-                            3 => vec![],
+                            1 => vec![Phenotype::without_time(PhenotypeTerms::DiminishedAbilityToConcentrate, SeverityTerms::Mild)],
+                            2 => vec![Phenotype::without_time(PhenotypeTerms::DiminishedAbilityToConcentrate, SeverityTerms::Moderate)],
+                            3 => vec![Phenotype::without_time(PhenotypeTerms::DiminishedAbilityToConcentrate, SeverityTerms::Severe)],
                         },
                 ),
                 QuestionnaireItem::new(
