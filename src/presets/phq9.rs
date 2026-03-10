@@ -7,7 +7,7 @@ use chrono::Duration;
 use maplit::{btreemap, hashmap};
 
 pub(crate) fn phq9() -> Questionnaire {
-    Questionnaire::new("PATIENT HEALTH (PHQ-9) QUESTIONNAIRE-9".to_string(), vec![
+    Questionnaire::new("PATIENT HEALTH (PHQ-9) QUESTIONNAIRE-9", vec![
         QuestionnaireItem::new(
             Some("Little interest or pleasure in doing things".to_string()),
             hashmap! {

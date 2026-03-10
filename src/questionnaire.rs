@@ -18,14 +18,14 @@ pub struct Questionnaire {
 
 impl Questionnaire {
     pub fn new(
-        name: String,
+        name: impl Into<String>,
         items: Vec<QuestionnaireItem>,
         interpretation: BTreeMap<i32, Option<Condition>>,
         score_calculator: impl CalculateScore + 'static,
         recall_period: Option<Duration>,
     ) -> Self {
         Self {
-            name,
+            name: name.into(),
             items,
             interpretation,
             score_calculator: Box::new(score_calculator),
