@@ -1,7 +1,6 @@
 use crate::answer::Answer;
-use crate::diagnosis::Diagnosis;
+use crate::condition::Condition;
 use crate::error::RorschachError;
-use crate::phenotype::Phenotype;
 use crate::questionnaire_item::QuestionnaireItem;
 use crate::questionnaire_result::QuestionnaireResult;
 use crate::traits::CalculateScore;
@@ -12,7 +11,7 @@ use std::collections::{BTreeMap, HashSet};
 pub struct Questionnaire {
     name: String,
     items: Vec<QuestionnaireItem>,
-    interpretation: BTreeMap<i32, Option<Diagnosis>>,
+    interpretation: BTreeMap<i32, Option<Condition>>,
     score_calculator: Box<dyn CalculateScore>,
     recall_period: Option<Duration>,
 }
@@ -21,7 +20,7 @@ impl Questionnaire {
     pub fn new(
         name: String,
         items: Vec<QuestionnaireItem>,
-        interpretation: BTreeMap<i32, Option<Diagnosis>>,
+        interpretation: BTreeMap<i32, Option<Condition>>,
         score_calculator: impl CalculateScore + 'static,
         recall_period: Option<Duration>,
     ) -> Self {
@@ -82,7 +81,7 @@ impl Questionnaire {
             QuestionnaireResult::new(questionnaire_id, diagnosis, HashSet::new(), taken_at);
 
         for (answer, question) in answers.iter().zip(self.items.iter()) {
-            let mut phenotypes: Vec<Phenotype> = question.answer(answer.idx()).to_vec();
+            let mut phenotypes: Vec<Condition> = question.answer(answer.idx()).to_vec();
 
             if let Some(taken) = taken_at
                 && let Some(recall) = self.recall_period
@@ -103,7 +102,7 @@ impl Questionnaire {
         &self,
         total_score: f32,
         taken_at: Option<DateTime<Utc>>,
-    ) -> Result<Option<Diagnosis>, RorschachError> {
+    ) -> Result<Option<Condition>, RorschachError> {
         let (_, diagnosis) = self
             .interpretation
             .range(..=total_score.ceil() as i32)

@@ -1,5 +1,4 @@
-use crate::diagnosis::Diagnosis;
-use crate::phenotype::Phenotype;
+use crate::condition::Condition;
 use chrono::{DateTime, Utc};
 use std::collections::HashSet;
 use std::fmt;
@@ -7,16 +6,16 @@ use std::fmt;
 #[derive(Debug)]
 pub struct QuestionnaireResult {
     id: String,
-    diagnosis: Option<Diagnosis>,
-    phenotypes: HashSet<Phenotype>,
+    diagnosis: Option<Condition>,
+    phenotypes: HashSet<Condition>,
     taken_at: Option<DateTime<Utc>>,
 }
 
 impl QuestionnaireResult {
     pub fn new(
         id: impl Into<String>,
-        diagnosis: Option<Diagnosis>,
-        phenotypes: HashSet<Phenotype>,
+        diagnosis: Option<Condition>,
+        phenotypes: HashSet<Condition>,
         taken_at: Option<DateTime<Utc>>,
     ) -> Self {
         Self {
@@ -30,7 +29,7 @@ impl QuestionnaireResult {
     pub fn set_taken_at(&mut self, taken_at: Option<DateTime<Utc>>) {
         self.taken_at = taken_at;
     }
-    pub fn push_phenotypes(&mut self, terms: Vec<Phenotype>) {
+    pub fn push_phenotypes(&mut self, terms: Vec<Condition>) {
         self.phenotypes.extend(terms);
     }
 }

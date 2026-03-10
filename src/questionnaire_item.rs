@@ -1,21 +1,21 @@
-use crate::phenotype::Phenotype;
+use crate::condition::Condition;
 use std::collections::HashMap;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct QuestionnaireItem {
     stem: Option<String>,
-    phenotypes: HashMap<usize, Vec<Phenotype>>,
+    phenotypes: HashMap<usize, Vec<Condition>>,
 }
 
 impl QuestionnaireItem {
     pub fn new(
         stem: Option<String>,
-        phenotypes: HashMap<usize, Vec<Phenotype>>,
+        phenotypes: HashMap<usize, Vec<Condition>>,
     ) -> QuestionnaireItem {
         Self { stem, phenotypes }
     }
 
-    pub fn answer(&self, answer_idx: usize) -> &[Phenotype] {
+    pub fn answer(&self, answer_idx: usize) -> &[Condition] {
         self.phenotypes
             .get(&answer_idx)
             .map(|v| v.as_slice())
