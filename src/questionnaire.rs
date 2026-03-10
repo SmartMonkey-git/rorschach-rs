@@ -77,7 +77,7 @@ impl Questionnaire {
             });
         }
 
-        let diagnosis = self.get_diagnosis(total_score)?;
+        let diagnosis = self.get_diagnosis(total_score, taken_at)?;
         let mut result =
             QuestionnaireResult::new(questionnaire_id, diagnosis, HashSet::new(), taken_at);
 
@@ -103,16 +103,29 @@ impl Questionnaire {
         Ok(result)
     }
 
-    fn get_diagnosis(&self, total_score: f32) -> Result<Option<Diagnosis>, RorschachError> {
+    fn get_diagnosis(
+        &self,
+        total_score: f32,
+        taken_at: Option<DateTime<Utc>>,
+    ) -> Result<Option<Diagnosis>, RorschachError> {
         let (_, diagnosis) = self
             .interpretation
             .range(..=total_score.ceil() as i32)
             .next_back()
-            .ok_or_else(|| RorschachError::NoMatchingDiagnosis {
+            .ok_or(RorschachError::NoMatchingDiagnosis {
                 found_score: total_score,
             })?;
 
-        Ok(diagnosis.clone())
+        let mut diagnosis = diagnosis.clone();
+
+        if let (Some(taken), Some(recall), Some(d)) =
+            (taken_at, self.recall_period, diagnosis.as_mut())
+        {
+            d.set_observed_start(Some(taken - recall));
+            d.set_observed_end(Some(taken));
+        }
+
+        Ok(diagnosis)
     }
 }
 

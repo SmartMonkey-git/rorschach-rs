@@ -99,11 +99,11 @@ impl AvailableTest {
                 ),
             ], btreemap! {
                     0 => None,
-                    2 => Some(Diagnosis::new(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Borderline)),
-                    5 => Some(Diagnosis::new(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Mild)),
-                    10 => Some(Diagnosis::new(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Moderate)),
-                    15 => Some(Diagnosis::new(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Severe)),
-                    20 => Some(Diagnosis::new(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Severe)),
+                    2 => Some(Diagnosis::without_time(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Borderline)),
+                    5 => Some(Diagnosis::without_time(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Mild)),
+                    10 => Some(Diagnosis::without_time(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Moderate)),
+                    15 => Some(Diagnosis::without_time(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Severe)),
+                    20 => Some(Diagnosis::without_time(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Severe)),
             }, SumScore,
             Some(Duration::weeks(2))
             ),
