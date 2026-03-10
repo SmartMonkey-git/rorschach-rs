@@ -44,11 +44,9 @@ impl Condition {
         }
     }
 
-    pub fn set_observed_start(&mut self, observed_start: Option<DateTime<Utc>>) {
-        self.observed_start = observed_start;
-    }
-    pub fn set_observed_end(&mut self, observed_end: Option<DateTime<Utc>>) {
-        self.observed_end = observed_end;
+    pub fn set_time(&mut self, observed_start: DateTime<Utc>, observed_end: DateTime<Utc>) {
+        self.observed_start = Some(observed_start);
+        self.observed_end = Some(observed_end);
     }
 }
 

@@ -25,13 +25,6 @@ impl QuestionnaireResult {
             taken_at,
         }
     }
-
-    pub fn set_taken_at(&mut self, taken_at: Option<DateTime<Utc>>) {
-        self.taken_at = taken_at;
-    }
-    pub fn push_phenotypes(&mut self, terms: Vec<Condition>) {
-        self.phenotypes.extend(terms);
-    }
 }
 
 impl fmt::Display for QuestionnaireResult {
