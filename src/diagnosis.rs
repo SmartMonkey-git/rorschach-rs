@@ -11,6 +11,7 @@ pub struct Diagnosis {
 }
 
 impl Diagnosis {
+    #[allow(dead_code)]
     pub(crate) fn new(
         term: impl Into<Term>,
         severity: impl Into<Term>,

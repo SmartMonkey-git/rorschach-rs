@@ -20,6 +20,7 @@ impl Phenotype {
         }
     }
 
+    #[allow(dead_code)]
     pub(crate) fn new(
         r#type: impl Into<Term>,
         severity: impl Into<Term>,

@@ -81,12 +81,9 @@ impl Questionnaire {
         let mut result =
             QuestionnaireResult::new(questionnaire_id, diagnosis, HashSet::new(), taken_at);
 
-        for (answer, question) in answers.into_iter().zip(self.items.iter()) {
-            let mut phenotypes: Vec<Phenotype> = question
-                .answer(answer.idx())
-                .iter()
-                .map(|pt| pt.clone())
-                .collect();
+        for (answer, question) in answers.iter().zip(self.items.iter()) {
+            let mut phenotypes: Vec<Phenotype> =
+                question.answer(answer.idx()).iter().cloned().collect();
 
             if let Some(taken) = taken_at
                 && let Some(recall) = self.recall_period
