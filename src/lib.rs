@@ -1,10 +1,11 @@
 pub mod answer;
-pub mod available_tests;
 pub mod diagnosis;
 pub mod error;
 pub mod phenotype;
+mod presets;
 pub mod questionnaire;
 pub mod questionnaire_item;
+pub mod questionnaire_presets;
 pub mod questionnaire_result;
 mod rorschach;
 pub mod score_calculations;
