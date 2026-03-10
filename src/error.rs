@@ -1,3 +1,5 @@
+use crate::term::Term;
+use std::fmt::Debug;
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -18,4 +20,12 @@ pub enum RorschachError {
     },
     #[error("No diagnostic interpretation found for a score of {found_score}.")]
     NoMatchingDiagnosis { found_score: f32 },
+}
+
+#[derive(Debug, Error)]
+pub enum ToCsvError {
+    #[error("Can't parse {value:?}")]
+    CantParseSeverity { value: Option<Term> },
+    #[error(transparent)]
+    IOError(#[from] std::io::Error),
 }

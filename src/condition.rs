@@ -35,6 +35,19 @@ impl Condition {
         }
     }
 
+    pub fn term(&self) -> &Term {
+        &self.term
+    }
+    pub fn severity(&self) -> Option<&Term> {
+        self.severity.as_ref()
+    }
+    pub fn observed_start(&self) -> Option<&DateTime<Utc>> {
+        self.observed_start.as_ref()
+    }
+    pub fn observed_end(&self) -> Option<&DateTime<Utc>> {
+        self.observed_end.as_ref()
+    }
+
     pub fn from_type(term: impl Into<Term>) -> Self {
         Self {
             term: term.into(),

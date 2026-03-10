@@ -13,6 +13,28 @@ impl Term {
             label: label.into(),
         }
     }
+
+    pub fn id(&self) -> &str {
+        &self.id
+    }
+    pub fn label(&self) -> &str {
+        &self.label
+    }
+    pub fn as_severity(&self) -> Option<SeverityTerms> {
+        if self.id == SeverityTerms::Borderline.as_term().id {
+            Some(SeverityTerms::Borderline)
+        } else if self.id == SeverityTerms::Mild.as_term().id {
+            Some(SeverityTerms::Mild)
+        } else if self.id == SeverityTerms::Moderate.as_term().id {
+            Some(SeverityTerms::Moderate)
+        } else if self.id == SeverityTerms::Severe.as_term().id {
+            Some(SeverityTerms::Severe)
+        } else if self.id == SeverityTerms::Profound.as_term().id {
+            Some(SeverityTerms::Profound)
+        } else {
+            None
+        }
+    }
 }
 
 impl fmt::Display for Term {
@@ -83,12 +105,13 @@ impl From<PhenotypeTerms> for Term {
     }
 }
 
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum SeverityTerms {
     Borderline,
     Mild,
     Moderate,
-    Profound,
     Severe,
+    Profound,
 }
 
 impl SeverityTerms {

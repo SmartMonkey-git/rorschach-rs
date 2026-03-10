@@ -12,3 +12,4 @@ mod rorschach;
 pub mod score_calculations;
 pub mod term;
 pub mod traits;
+mod utils;
