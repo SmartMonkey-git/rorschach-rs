@@ -4,7 +4,6 @@ use crate::traits::ToCsv;
 use crate::utils::{escape_csv_field, format_optional_datetime};
 use chrono::{DateTime, Utc};
 use std::collections::HashSet;
-use std::error::Error;
 use std::fmt;
 use std::io::Write;
 

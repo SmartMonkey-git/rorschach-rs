@@ -1,5 +1,4 @@
 use crate::error::ToCsvError;
-use std::error::Error;
 use std::fmt::Debug;
 use std::io::Write;
 

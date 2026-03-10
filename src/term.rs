@@ -1,4 +1,3 @@
-use crate::utils::escape_csv_field;
 use std::fmt;
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
