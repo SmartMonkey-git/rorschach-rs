@@ -77,16 +77,12 @@ impl Questionnaire {
             });
         }
 
-        let diagnosis = self.get_diagnosis(total_score)?;
+        let diagnosis = self.get_diagnosis(total_score, taken_at)?;
         let mut result =
             QuestionnaireResult::new(questionnaire_id, diagnosis, HashSet::new(), taken_at);
 
-        for (answer, question) in answers.into_iter().zip(self.items.iter()) {
-            let mut phenotypes: Vec<Phenotype> = question
-                .answer(answer.idx())
-                .iter()
-                .map(|pt| pt.clone())
-                .collect();
+        for (answer, question) in answers.iter().zip(self.items.iter()) {
+            let mut phenotypes: Vec<Phenotype> = question.answer(answer.idx()).to_vec();
 
             if let Some(taken) = taken_at
                 && let Some(recall) = self.recall_period
@@ -103,16 +99,29 @@ impl Questionnaire {
         Ok(result)
     }
 
-    fn get_diagnosis(&self, total_score: f32) -> Result<Option<Diagnosis>, RorschachError> {
+    fn get_diagnosis(
+        &self,
+        total_score: f32,
+        taken_at: Option<DateTime<Utc>>,
+    ) -> Result<Option<Diagnosis>, RorschachError> {
         let (_, diagnosis) = self
             .interpretation
             .range(..=total_score.ceil() as i32)
             .next_back()
-            .ok_or_else(|| RorschachError::NoMatchingDiagnosis {
+            .ok_or(RorschachError::NoMatchingDiagnosis {
                 found_score: total_score,
             })?;
 
-        Ok(diagnosis.clone())
+        let mut diagnosis = diagnosis.clone();
+
+        if let (Some(taken), Some(recall), Some(d)) =
+            (taken_at, self.recall_period, diagnosis.as_mut())
+        {
+            d.set_observed_start(Some(taken - recall));
+            d.set_observed_end(Some(taken));
+        }
+
+        Ok(diagnosis)
     }
 }
 
@@ -121,5 +130,19 @@ impl PartialEq for Questionnaire {
         self.name == other.name
             && self.items == other.items
             && self.interpretation == other.interpretation
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::questionnaire::Questionnaire;
+    use crate::score_calculations::sum_score::SumScore;
+
+    #[test]
+    fn test_new() {
+        let questionnaire =
+            Questionnaire::new("".to_string(), vec![], Default::default(), SumScore, None);
+
+        assert!(questionnaire.recall_period.is_none());
     }
 }
