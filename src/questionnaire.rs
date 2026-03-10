@@ -142,6 +142,7 @@ mod tests {
     fn test_new() {
         let questionnaire =
             Questionnaire::new("".to_string(), vec![], Default::default(), SumScore, None);
-        questionnaire.recall_period;
+
+        assert!(questionnaire.recall_period.is_none());
     }
 }
