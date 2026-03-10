@@ -132,3 +132,16 @@ impl PartialEq for Questionnaire {
             && self.interpretation == other.interpretation
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::questionnaire::Questionnaire;
+    use crate::score_calculations::sum_score::SumScore;
+
+    #[test]
+    fn test_new() {
+        let questionnaire =
+            Questionnaire::new("".to_string(), vec![], Default::default(), SumScore, None);
+        questionnaire.recall_period;
+    }
+}
