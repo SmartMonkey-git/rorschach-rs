@@ -1,3 +1,4 @@
+use crate::error::ToCsvError;
 use std::error::Error;
 use std::fmt::Debug;
 use std::io::Write;
@@ -7,5 +8,5 @@ pub trait CalculateScore: Debug {
 }
 
 pub trait ToCsv<T> {
-    fn to_csv<W: Write>(&self, writer: &mut W) -> Result<(), Box<dyn Error>>;
+    fn to_csv<W: Write>(&self, writer: &mut W) -> Result<(), ToCsvError>;
 }

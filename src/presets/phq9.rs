@@ -95,7 +95,7 @@ pub(crate) fn phq9() -> Questionnaire {
                     5 => Some(Condition::without_time(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Mild)),
                     10 => Some(Condition::without_time(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Moderate)),
                     15 => Some(Condition::without_time(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Severe)),
-                    20 => Some(Condition::without_time(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Severe)),
+                    20 => Some(Condition::without_time(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Profound)),
             }, SumScore,
                                                      Some(Duration::weeks(2))
     )
