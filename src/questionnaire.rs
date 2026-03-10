@@ -1,7 +1,6 @@
 use crate::answer::Answer;
-use crate::diagnosis::Diagnosis;
+use crate::condition::Condition;
 use crate::error::RorschachError;
-use crate::phenotype::Phenotype;
 use crate::questionnaire_item::QuestionnaireItem;
 use crate::questionnaire_result::QuestionnaireResult;
 use crate::traits::CalculateScore;
@@ -12,7 +11,7 @@ use std::collections::{BTreeMap, HashSet};
 pub struct Questionnaire {
     name: String,
     items: Vec<QuestionnaireItem>,
-    interpretation: BTreeMap<i32, Option<Diagnosis>>,
+    interpretation: BTreeMap<i32, Option<Condition>>,
     score_calculator: Box<dyn CalculateScore>,
     recall_period: Option<Duration>,
 }
@@ -21,7 +20,7 @@ impl Questionnaire {
     pub fn new(
         name: String,
         items: Vec<QuestionnaireItem>,
-        interpretation: BTreeMap<i32, Option<Diagnosis>>,
+        interpretation: BTreeMap<i32, Option<Condition>>,
         score_calculator: impl CalculateScore + 'static,
         recall_period: Option<Duration>,
     ) -> Self {
@@ -77,24 +76,20 @@ impl Questionnaire {
             });
         }
 
-        let diagnosis = self.get_diagnosis(total_score, taken_at)?;
-        let mut result =
-            QuestionnaireResult::new(questionnaire_id, diagnosis, HashSet::new(), taken_at);
-
+        let mut phenotypes_set: HashSet<Condition> = HashSet::new();
         for (answer, question) in answers.iter().zip(self.items.iter()) {
-            let mut phenotypes: Vec<Phenotype> = question.answer(answer.idx()).to_vec();
+            let mut phenotypes: Vec<Condition> = question.answer(answer.idx()).to_vec();
 
-            if let Some(taken) = taken_at
-                && let Some(recall) = self.recall_period
-            {
-                for pt in phenotypes.iter_mut() {
-                    pt.set_observed_start(Some(taken - recall));
-                    pt.set_observed_end(Some(taken));
-                }
+            for pt in phenotypes.iter_mut() {
+                self.set_time(pt, taken_at);
             }
 
-            result.push_phenotypes(phenotypes.to_vec());
+            phenotypes_set.extend(phenotypes);
         }
+
+        let diagnosis = self.get_diagnosis(total_score, taken_at)?;
+        let result =
+            QuestionnaireResult::new(questionnaire_id, diagnosis, phenotypes_set, taken_at);
 
         Ok(result)
     }
@@ -103,7 +98,7 @@ impl Questionnaire {
         &self,
         total_score: f32,
         taken_at: Option<DateTime<Utc>>,
-    ) -> Result<Option<Diagnosis>, RorschachError> {
+    ) -> Result<Option<Condition>, RorschachError> {
         let (_, diagnosis) = self
             .interpretation
             .range(..=total_score.ceil() as i32)
@@ -113,15 +108,17 @@ impl Questionnaire {
             })?;
 
         let mut diagnosis = diagnosis.clone();
-
-        if let (Some(taken), Some(recall), Some(d)) =
-            (taken_at, self.recall_period, diagnosis.as_mut())
-        {
-            d.set_observed_start(Some(taken - recall));
-            d.set_observed_end(Some(taken));
+        if let Some(diagnosis) = diagnosis.as_mut() {
+            self.set_time(diagnosis, taken_at);
         }
 
         Ok(diagnosis)
+    }
+
+    fn set_time(&self, condition: &mut Condition, taken_at: Option<DateTime<Utc>>) {
+        if let (Some(taken), Some(recall)) = (taken_at, self.recall_period) {
+            condition.set_time(taken - recall, taken);
+        }
     }
 }
 

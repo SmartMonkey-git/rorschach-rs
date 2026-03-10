@@ -1,7 +1,8 @@
 pub mod answer;
-pub mod diagnosis;
+pub mod condition;
+
 pub mod error;
-pub mod phenotype;
+
 mod presets;
 pub mod questionnaire;
 pub mod questionnaire_item;
