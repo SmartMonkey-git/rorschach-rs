@@ -13,6 +13,13 @@ impl Term {
             label: label.into(),
         }
     }
+
+    pub fn id(&self) -> &str {
+        &self.id
+    }
+    pub fn label(&self) -> &str {
+        &self.label
+    }
 }
 
 impl fmt::Display for Term {
