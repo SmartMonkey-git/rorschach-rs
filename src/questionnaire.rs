@@ -88,8 +88,13 @@ impl Questionnaire {
         }
 
         let diagnosis = self.get_diagnosis(total_score, taken_at)?;
-        let result =
-            QuestionnaireResult::new(questionnaire_id, diagnosis, phenotypes_set, taken_at);
+        let result = QuestionnaireResult::new(
+            questionnaire_id,
+            &self.name,
+            diagnosis,
+            phenotypes_set,
+            taken_at,
+        );
 
         Ok(result)
     }

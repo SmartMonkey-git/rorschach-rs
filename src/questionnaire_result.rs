@@ -10,6 +10,7 @@ use std::io::Write;
 #[derive(Debug)]
 pub struct QuestionnaireResult {
     id: String,
+    name: String,
     diagnosis: Option<Condition>,
     phenotypes: HashSet<Condition>,
     taken_at: Option<DateTime<Utc>>,
@@ -18,12 +19,14 @@ pub struct QuestionnaireResult {
 impl QuestionnaireResult {
     pub fn new(
         id: impl Into<String>,
+        name: impl Into<String>,
         diagnosis: Option<Condition>,
         phenotypes: HashSet<Condition>,
         taken_at: Option<DateTime<Utc>>,
     ) -> Self {
         Self {
             id: id.into(),
+            name: name.into(),
             diagnosis: diagnosis.clone(),
             phenotypes,
             taken_at,
@@ -71,7 +74,7 @@ impl ToCsv<Vec<QuestionnaireResult>> for Vec<QuestionnaireResult> {
 
         // Write header
         writer.write_all(b"id,\
-        diagnosis_term_id,diagnosis_term_label,diagnosis_severity_id,diagnosis_severity_label,diagnosis_observed_start,diagnosis_observed_end")?;
+        name,taken_at,diagnosis_term_id,diagnosis_term_label,diagnosis_severity_id,diagnosis_severity_label,diagnosis_observed_start,diagnosis_observed_end")?;
 
         for i in 1..=max_phenotypes {
             write!(
@@ -87,6 +90,14 @@ impl ToCsv<Vec<QuestionnaireResult>> for Vec<QuestionnaireResult> {
         for (result, sorted_phenotypes) in self.iter().zip(deduplicated.iter()) {
             writer.write_all(escape_csv_field(&result.id).as_bytes())?;
             writer.write_all(b",")?;
+
+            writer.write_all(escape_csv_field(&result.name).as_bytes())?;
+            writer.write_all(b",")?;
+
+            if let Some(taken_at) = result.taken_at {
+                writer.write_all(escape_csv_field(&taken_at.to_string()).as_bytes())?;
+                writer.write_all(b",")?;
+            }
 
             if let Some(diag) = &result.diagnosis {
                 writer.write_all(escape_csv_field(diag.term().id()).as_bytes())?;
@@ -206,7 +217,7 @@ mod tests {
 
         assert_eq!(
             csv,
-            "id,diagnosis_term_id,diagnosis_term_label,diagnosis_severity_id,diagnosis_severity_label,diagnosis_observed_start,diagnosis_observed_end\n"
+            "id,name,taken_at,diagnosis_term_id,diagnosis_term_label,diagnosis_severity_id,diagnosis_severity_label,diagnosis_observed_start,diagnosis_observed_end\n"
         );
     }
 
@@ -214,6 +225,7 @@ mod tests {
     fn test_to_csv_no_diagnosis_no_phenotypes() {
         let results = vec![QuestionnaireResult::new(
             "result-1",
+            "PHQ-9",
             None,
             HashSet::new(),
             None,
@@ -222,7 +234,7 @@ mod tests {
         let lines: Vec<&str> = csv.lines().collect();
 
         assert_eq!(lines.len(), 2);
-        assert_eq!(lines[1], "result-1,,,,,,,");
+        assert_eq!(lines[1], "result-1,PHQ-9,,,,,,,");
     }
 
     #[test]
@@ -236,6 +248,7 @@ mod tests {
 
         let results = vec![QuestionnaireResult::new(
             "result-2",
+            "PHQ-9",
             Some(diagnosis),
             HashSet::new(),
             None,
@@ -245,7 +258,8 @@ mod tests {
 
         assert_eq!(lines.len(), 2);
         assert!(
-            lines[1].starts_with("result-2,MONDO:0002050,depressive disorder,HP:0012828,Severe,")
+            lines[1]
+                .starts_with("result-2,PHQ-9,MONDO:0002050,depressive disorder,HP:0012828,Severe,")
         );
         assert!(lines[1].contains("2024-01-01T00:00:00+00:00"));
         assert!(lines[1].contains("2024-06-01T00:00:00+00:00"));
@@ -263,7 +277,9 @@ mod tests {
         let mut phenotypes = HashSet::new();
         phenotypes.insert(phenotype);
 
-        let results = vec![QuestionnaireResult::new("result-4", None, phenotypes, None)];
+        let results = vec![QuestionnaireResult::new(
+            "result-4", "PHQ-9", None, phenotypes, None,
+        )];
         let csv = to_csv_string(&results);
         let lines: Vec<&str> = csv.lines().collect();
 
@@ -304,6 +320,7 @@ mod tests {
 
         let results = vec![QuestionnaireResult::new(
             "result-dedup",
+            "PHQ-9",
             None,
             phenotypes,
             None,
@@ -332,8 +349,8 @@ mod tests {
         phenotypes.insert(phenotype);
 
         let results = vec![
-            QuestionnaireResult::new("result-5", None, HashSet::new(), None),
-            QuestionnaireResult::new("result-6", None, phenotypes, None),
+            QuestionnaireResult::new("result-5", "PHQ-9", None, HashSet::new(), None),
+            QuestionnaireResult::new("result-6", "PHQ-9", None, phenotypes, None),
         ];
         let csv = to_csv_string(&results);
         let lines: Vec<&str> = csv.lines().collect();
@@ -342,7 +359,7 @@ mod tests {
         assert!(lines[1].starts_with("result-5,"));
         assert!(lines[2].starts_with("result-6,"));
 
-        let header_cols = lines[0].split(',').count() + 1;
+        let header_cols = lines[0].split(',').count();
         assert_eq!(lines[1].split(',').count(), header_cols);
         assert_eq!(lines[2].split(',').count(), header_cols);
     }
@@ -351,6 +368,7 @@ mod tests {
     fn test_to_csv_field_with_comma_is_quoted() {
         let results = vec![QuestionnaireResult::new(
             "id,with,commas",
+            "PHQ-9",
             None,
             HashSet::new(),
             None,
