@@ -22,14 +22,14 @@ impl QuestionnaireResult {
         name: impl Into<String>,
         diagnosis: Option<Condition>,
         phenotypes: HashSet<Condition>,
-        taken_at: Option<DateTime<Utc>>,
+        taken_at: Option<&DateTime<Utc>>,
     ) -> Self {
         Self {
             id: id.into(),
             name: name.into(),
             diagnosis: diagnosis.clone(),
             phenotypes,
-            taken_at,
+            taken_at: taken_at.copied(),
         }
     }
 }

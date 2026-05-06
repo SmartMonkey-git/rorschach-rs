@@ -53,7 +53,7 @@ impl Questionnaire {
         &self,
         questionnaire_id: &str,
         answers: &[Answer],
-        taken_at: Option<DateTime<Utc>>,
+        taken_at: Option<&DateTime<Utc>>,
     ) -> Result<QuestionnaireResult, RorschachError> {
         if answers.len() != self.items.len() {
             return Err(RorschachError::AnswerQuestionMismatch {
@@ -78,7 +78,7 @@ impl Questionnaire {
 
         let mut phenotypes_set: HashSet<Condition> = HashSet::new();
         for (answer, question) in answers.iter().zip(self.items.iter()) {
-            let mut phenotypes: Vec<Condition> = question.answer(answer.idx()).to_vec();
+            let mut phenotypes: Vec<Condition> = question.answer(answer.score() as usize).to_vec();
 
             for pt in phenotypes.iter_mut() {
                 self.set_time(pt, taken_at);
@@ -102,7 +102,7 @@ impl Questionnaire {
     fn get_diagnosis(
         &self,
         total_score: f32,
-        taken_at: Option<DateTime<Utc>>,
+        taken_at: Option<&DateTime<Utc>>,
     ) -> Result<Option<Condition>, RorschachError> {
         let (_, diagnosis) = self
             .interpretation
@@ -120,9 +120,9 @@ impl Questionnaire {
         Ok(diagnosis)
     }
 
-    fn set_time(&self, condition: &mut Condition, taken_at: Option<DateTime<Utc>>) {
+    fn set_time(&self, condition: &mut Condition, taken_at: Option<&DateTime<Utc>>) {
         if let (Some(taken), Some(recall)) = (taken_at, self.recall_period) {
-            condition.set_time(taken - recall, taken);
+            condition.set_time(&(*taken - recall), taken);
         }
     }
 }

@@ -11,3 +11,7 @@ version = "0.1.0"
 thiserror = "2.0.18"
 maplit = "1.0.2"
 chrono = "0.4.41"
+serde = { version = "1.0.228", features = ["derive"] }
+
+[dev-dependencies]
+csv = "1.3"
