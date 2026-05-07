@@ -48,12 +48,14 @@ impl fmt::Display for Term {
 
 pub enum DiagnosisTerms {
     DepressiveDisorder,
+    AnxietyDisorder,
 }
 
 impl DiagnosisTerms {
     pub fn as_term(&self) -> Term {
         match self {
             DiagnosisTerms::DepressiveDisorder => Term::new("MONDO:0002050", "depressive disorder"),
+            DiagnosisTerms::AnxietyDisorder => Term::new("MONDO:0005618", "anxiety disorder"),
         }
     }
 }
@@ -73,6 +75,16 @@ pub enum PhenotypeTerms {
     AbnormalVolitionalState,
     SuicidalIdeation,
     DiminishedAbilityToConcentrate,
+    Anxiety,
+    Ruminations,
+    Agitation,
+    Restlessness,
+    Irritability,
+    AnticipatoryAnxiety,
+    Euphoria,
+    Grandiosity,
+    DecreasedNeedForSleep,
+    PressuredSpeech,
 }
 
 impl PhenotypeTerms {
@@ -98,6 +110,18 @@ impl PhenotypeTerms {
             PhenotypeTerms::DiminishedAbilityToConcentrate => {
                 Term::new("HP:0031987", "Diminished ability to concentrate")
             }
+            PhenotypeTerms::Anxiety => Term::new("HP:0000739", "Anxiety"),
+            PhenotypeTerms::Ruminations => Term::new("HP:0025771", "Ruminations"),
+            PhenotypeTerms::Agitation => Term::new("HP:0000713", "Agitation"),
+            PhenotypeTerms::Restlessness => Term::new("HP:0000711", "Restlessness"),
+            PhenotypeTerms::Irritability => Term::new("HP:0000737", "Irritability"),
+            PhenotypeTerms::AnticipatoryAnxiety => Term::new("HP:5200233", "Anticipatory anxiety"),
+            PhenotypeTerms::Euphoria => Term::new("HP:0031844", "Euphoria"),
+            PhenotypeTerms::Grandiosity => Term::new("HP:5200270", "Grandiosity"),
+            PhenotypeTerms::DecreasedNeedForSleep => {
+                Term::new("HP:5200276", "Decreased need for sleep")
+            }
+            PhenotypeTerms::PressuredSpeech => Term::new("HP:5200265", "Pressured speech"),
         }
     }
 }
