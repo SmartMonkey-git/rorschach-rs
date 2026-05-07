@@ -14,7 +14,7 @@ impl QuestionnairePresets {
         match self {
             QuestionnairePresets::PHQ9 => phq9(),
             QuestionnairePresets::GAD7 => gad7(),
-            QuestionnairePresets => asrm(),
+            QuestionnairePresets::ASRM => asrm(),
         }
     }
 }
