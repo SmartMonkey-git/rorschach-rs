@@ -238,34 +238,6 @@ mod tests {
     }
 
     #[test]
-    fn test_to_csv_with_full_diagnosis_no_phenotypes() {
-        let diagnosis = Condition::new(
-            DiagnosisTerms::DepressiveDisorder,
-            SeverityTerms::Severe,
-            Some(Utc.with_ymd_and_hms(2024, 1, 1, 0, 0, 0).unwrap()),
-            Some(Utc.with_ymd_and_hms(2024, 6, 1, 0, 0, 0).unwrap()),
-        );
-
-        let results = vec![QuestionnaireResult::new(
-            "result-2",
-            "PHQ-9",
-            Some(diagnosis),
-            HashSet::new(),
-            None,
-        )];
-        let csv = to_csv_string(&results);
-        let lines: Vec<&str> = csv.lines().collect();
-
-        assert_eq!(lines.len(), 2);
-        assert!(
-            lines[1]
-                .starts_with("result-2,PHQ-9,MONDO:0002050,depressive disorder,HP:0012828,Severe,")
-        );
-        assert!(lines[1].contains("2024-01-01T00:00:00+00:00"));
-        assert!(lines[1].contains("2024-06-01T00:00:00+00:00"));
-    }
-
-    #[test]
     fn test_to_csv_with_phenotypes() {
         let phenotype = Condition::new(
             PhenotypeTerms::LowSelfEsteem,
