@@ -82,7 +82,7 @@ impl Questionnaire {
             let mut phenotype: Condition = question.phenotype().clone();
             self.set_time(&mut phenotype, taken_at);
 
-            let severity = Self::calculate_severity(answer, &question)?;
+            let severity = Self::calculate_severity(answer, question)?;
             phenotype.set_severity(&severity);
             phenotypes_set.insert(phenotype);
         }
