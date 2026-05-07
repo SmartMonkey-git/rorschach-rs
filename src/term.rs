@@ -1,4 +1,7 @@
+use crate::condition::Condition;
+use crate::error::RorschachError;
 use std::fmt;
+use strum::{EnumCount, EnumIter, IntoEnumIterator};
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct Term {
@@ -105,8 +108,15 @@ impl From<PhenotypeTerms> for Term {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+impl From<PhenotypeTerms> for Condition {
+    fn from(value: PhenotypeTerms) -> Self {
+        Condition::from_type(value)
+    }
+}
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, EnumIter, EnumCount)]
 pub enum SeverityTerms {
+    // The severities need to be sorted descendingly for from_numerical_severity to work
     Borderline,
     Mild,
     Moderate,
@@ -124,10 +134,70 @@ impl SeverityTerms {
             SeverityTerms::Severe => Term::new("HP:0012828", "Severe"),
         }
     }
+
+    pub fn from_numerical_severity(severity: f32) -> Result<SeverityTerms, RorschachError> {
+        let last_max = 0.0;
+
+        if (0.0..=1.0).contains(&severity) {
+            for (idx, severity_enum) in SeverityTerms::iter().enumerate() {
+                let max = (idx + 1) as f32 / SeverityTerms::COUNT as f32;
+
+                if (last_max..=max).contains(&severity) {
+                    return Ok(severity_enum);
+                }
+            }
+        }
+        Err(RorschachError::CantMapSeverity(severity))
+    }
 }
 
 impl From<SeverityTerms> for Term {
     fn from(value: SeverityTerms) -> Self {
         value.as_term()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_boundaries_map_correctly() {
+        let count = SeverityTerms::COUNT as f32;
+        for (idx, expected) in SeverityTerms::iter().enumerate() {
+            let max = (idx + 1) as f32 / count;
+            let mid = (idx as f32 / count + max) / 2.0;
+
+            assert_eq!(
+                SeverityTerms::from_numerical_severity(mid).unwrap(),
+                expected
+            );
+            assert_eq!(
+                SeverityTerms::from_numerical_severity(max).unwrap(),
+                expected
+            );
+        }
+    }
+
+    #[test]
+    fn test_out_of_range_returns_error() {
+        assert!(SeverityTerms::from_numerical_severity(-0.1).is_err());
+        assert!(SeverityTerms::from_numerical_severity(1.1).is_err());
+    }
+
+    #[test]
+    fn test_zero_maps_to_first_variant() {
+        assert_eq!(
+            SeverityTerms::from_numerical_severity(0.0).unwrap(),
+            SeverityTerms::Borderline
+        );
+    }
+
+    #[test]
+    fn test_one_maps_to_last_variant() {
+        assert_eq!(
+            SeverityTerms::from_numerical_severity(1.0).unwrap(),
+            SeverityTerms::Profound
+        );
     }
 }

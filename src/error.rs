@@ -20,6 +20,8 @@ pub enum RorschachError {
     },
     #[error("No diagnostic interpretation found for a score of {found_score}.")]
     NoMatchingDiagnosis { found_score: f32 },
+    #[error("Numerical Severity needs to be normalized between 0-1. Got: {0}")]
+    CantMapSeverity(f32),
 }
 
 #[derive(Debug, Error)]
