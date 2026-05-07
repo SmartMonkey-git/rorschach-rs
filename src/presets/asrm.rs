@@ -5,7 +5,7 @@ use crate::term::PhenotypeTerms;
 use chrono::Duration;
 use maplit::btreemap;
 
-pub(crate) fn gad7() -> Questionnaire {
+pub(crate) fn asrm() -> Questionnaire {
     Questionnaire::new(
         "ASRM",
         vec![
