@@ -1,28 +1,30 @@
 use crate::condition::Condition;
-use std::collections::HashMap;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct QuestionnaireItem {
     stem: Option<String>,
-    phenotypes: HashMap<usize, Vec<Condition>>,
+    phenotype: Condition,
+    n_answers: f32,
 }
 
 impl QuestionnaireItem {
     pub fn new(
         stem: Option<String>,
-        phenotypes: HashMap<usize, Vec<Condition>>,
+        phenotype: impl Into<Condition>,
+        n_answers: f32,
     ) -> QuestionnaireItem {
-        Self { stem, phenotypes }
+        Self {
+            stem,
+            phenotype: phenotype.into(),
+            n_answers,
+        }
     }
 
-    pub fn answer(&self, answer_idx: usize) -> &[Condition] {
-        self.phenotypes
-            .get(&answer_idx)
-            .map(|v| v.as_slice())
-            .unwrap_or(&[])
+    pub fn phenotype(&self) -> &Condition {
+        &self.phenotype
     }
 
-    pub fn max_score(&self) -> f32 {
-        self.phenotypes.len() as f32
+    pub fn n_answers(&self) -> f32 {
+        self.n_answers
     }
 }

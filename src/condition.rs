@@ -61,6 +61,10 @@ impl Condition {
         self.observed_start = Some(*observed_start);
         self.observed_end = Some(*observed_end);
     }
+
+    pub fn set_severity(&mut self, severity: &Term) {
+        self.severity = Some(severity.clone());
+    }
 }
 
 impl fmt::Display for Condition {
