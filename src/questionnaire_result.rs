@@ -200,7 +200,7 @@ impl fmt::Display for QuestionnaireResult {
 mod tests {
     use super::*;
     use crate::condition::Condition;
-    use crate::term::{DiagnosisTerms, PhenotypeTerms, SeverityTerms};
+    use crate::term::{PhenotypeTerms, SeverityTerms};
     use chrono::TimeZone;
     use std::collections::HashSet;
 
