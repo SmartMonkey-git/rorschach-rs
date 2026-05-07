@@ -24,6 +24,7 @@ struct Row {
 }
 
 #[test]
+#[ignore]
 fn test_decode() {
     let mut rdr = Reader::from_path("/Users/rouvenreuter/data/bogus/PHQ-9.csv").unwrap();
     let phq9 = QuestionnairePresets::PHQ9.build();
