@@ -96,8 +96,8 @@ impl ToCsv<Vec<QuestionnaireResult>> for Vec<QuestionnaireResult> {
 
             if let Some(taken_at) = result.taken_at {
                 writer.write_all(escape_csv_field(&taken_at.to_string()).as_bytes())?;
-                writer.write_all(b",")?;
             }
+            writer.write_all(b",")?; // Always write the column separator
 
             if let Some(diag) = &result.diagnosis {
                 writer.write_all(escape_csv_field(diag.term().id()).as_bytes())?;
@@ -123,7 +123,7 @@ impl ToCsv<Vec<QuestionnaireResult>> for Vec<QuestionnaireResult> {
                 writer.write_all(b",")?;
                 writer.write_all(format_optional_datetime(diag.observed_end()).as_bytes())?;
             } else {
-                writer.write_all(b",,,,,,")?;
+                writer.write_all(b",,,,,")?;
             }
 
             for i in 0..max_phenotypes {
