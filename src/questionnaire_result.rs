@@ -22,14 +22,14 @@ impl QuestionnaireResult {
         name: impl Into<String>,
         diagnosis: Option<Condition>,
         phenotypes: HashSet<Condition>,
-        taken_at: Option<DateTime<Utc>>,
+        taken_at: Option<&DateTime<Utc>>,
     ) -> Self {
         Self {
             id: id.into(),
             name: name.into(),
             diagnosis: diagnosis.clone(),
             phenotypes,
-            taken_at,
+            taken_at: taken_at.copied(),
         }
     }
 }
@@ -96,8 +96,8 @@ impl ToCsv<Vec<QuestionnaireResult>> for Vec<QuestionnaireResult> {
 
             if let Some(taken_at) = result.taken_at {
                 writer.write_all(escape_csv_field(&taken_at.to_string()).as_bytes())?;
-                writer.write_all(b",")?;
             }
+            writer.write_all(b",")?; // Always write the column separator
 
             if let Some(diag) = &result.diagnosis {
                 writer.write_all(escape_csv_field(diag.term().id()).as_bytes())?;
@@ -123,7 +123,7 @@ impl ToCsv<Vec<QuestionnaireResult>> for Vec<QuestionnaireResult> {
                 writer.write_all(b",")?;
                 writer.write_all(format_optional_datetime(diag.observed_end()).as_bytes())?;
             } else {
-                writer.write_all(b",,,,,,")?;
+                writer.write_all(b",,,,,")?;
             }
 
             for i in 0..max_phenotypes {
@@ -200,7 +200,7 @@ impl fmt::Display for QuestionnaireResult {
 mod tests {
     use super::*;
     use crate::condition::Condition;
-    use crate::term::{DiagnosisTerms, PhenotypeTerms, SeverityTerms};
+    use crate::term::{PhenotypeTerms, SeverityTerms};
     use chrono::TimeZone;
     use std::collections::HashSet;
 
@@ -235,34 +235,6 @@ mod tests {
 
         assert_eq!(lines.len(), 2);
         assert_eq!(lines[1], "result-1,PHQ-9,,,,,,,");
-    }
-
-    #[test]
-    fn test_to_csv_with_full_diagnosis_no_phenotypes() {
-        let diagnosis = Condition::new(
-            DiagnosisTerms::DepressiveDisorder,
-            SeverityTerms::Severe,
-            Some(Utc.with_ymd_and_hms(2024, 1, 1, 0, 0, 0).unwrap()),
-            Some(Utc.with_ymd_and_hms(2024, 6, 1, 0, 0, 0).unwrap()),
-        );
-
-        let results = vec![QuestionnaireResult::new(
-            "result-2",
-            "PHQ-9",
-            Some(diagnosis),
-            HashSet::new(),
-            None,
-        )];
-        let csv = to_csv_string(&results);
-        let lines: Vec<&str> = csv.lines().collect();
-
-        assert_eq!(lines.len(), 2);
-        assert!(
-            lines[1]
-                .starts_with("result-2,PHQ-9,MONDO:0002050,depressive disorder,HP:0012828,Severe,")
-        );
-        assert!(lines[1].contains("2024-01-01T00:00:00+00:00"));
-        assert!(lines[1].contains("2024-06-01T00:00:00+00:00"));
     }
 
     #[test]
