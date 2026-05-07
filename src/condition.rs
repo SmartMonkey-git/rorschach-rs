@@ -58,8 +58,8 @@ impl Condition {
     }
 
     pub fn set_time(&mut self, observed_start: &DateTime<Utc>, observed_end: &DateTime<Utc>) {
-        self.observed_start = Some(observed_start.clone());
-        self.observed_end = Some(observed_end.clone());
+        self.observed_start = Some(*observed_start);
+        self.observed_end = Some(*observed_end);
     }
 }
 
