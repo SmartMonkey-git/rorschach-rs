@@ -121,7 +121,7 @@ impl PhenotypeTerms {
             PhenotypeTerms::DecreasedNeedForSleep => {
                 Term::new("HP:5200276", "Decreased need for sleep")
             }
-            PhenotypeTerms::PressuredSpeech => Term::new("HP:HP:5200265", "Pressured speech"),
+            PhenotypeTerms::PressuredSpeech => Term::new("HP:5200265", "Pressured speech"),
         }
     }
 }
