@@ -127,5 +127,7 @@ fn test_decode() {
 
     let mut output = File::create("/Users/rouvenreuter/data/bogus/rorschach_output.csv").unwrap();
 
-    results.to_csv(&mut BufWriter::new(&mut output)).unwrap();
+    results
+        .to_csv(&mut BufWriter::new(&mut output), true)
+        .unwrap();
 }

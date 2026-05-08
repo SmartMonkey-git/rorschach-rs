@@ -6,7 +6,7 @@ use crate::questionnaire_result::QuestionnaireResult;
 use crate::term::{SeverityTerms, Term};
 use crate::traits::CalculateScore;
 use chrono::{DateTime, Duration, Utc};
-use std::collections::{BTreeMap, HashSet};
+use std::collections::BTreeMap;
 
 #[derive(Debug)]
 pub struct Questionnaire {
@@ -77,18 +77,24 @@ impl Questionnaire {
             });
         }
 
-        let mut phenotypes_set: HashSet<Condition> = HashSet::new();
+        let mut phenotypes_set: Vec<Condition> = Vec::new();
         for (answer, question) in answers.iter().zip(self.items.iter()) {
             let mut phenotype: Condition = question.phenotype().clone();
             self.set_time(&mut phenotype, taken_at);
 
-            let severity = Self::calculate_severity(answer, question)?;
-            phenotype.set_severity(&severity);
-            phenotypes_set.insert(phenotype);
+            //TODO: It might not be true that the marking the first answer for a question means to exclude the phenotype.
+            if answer.score() >= 1.0 {
+                let severity = Self::calculate_severity(answer, question)?;
+                phenotype.set_severity(&severity);
+            } else {
+                phenotype.set_excluded(true);
+            }
+            phenotypes_set.push(phenotype);
         }
 
         let diagnosis = self.get_diagnosis(total_score, taken_at)?;
         let result = QuestionnaireResult::new(
+            None::<String>,
             questionnaire_id,
             &self.name,
             diagnosis,

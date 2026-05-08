@@ -3,158 +3,163 @@ use crate::error::ToCsvError;
 use crate::traits::ToCsv;
 use crate::utils::{escape_csv_field, format_optional_datetime};
 use chrono::{DateTime, Utc};
-use std::collections::HashSet;
+use std::collections::HashMap;
 use std::fmt;
 use std::io::Write;
 
 #[derive(Debug)]
 pub struct QuestionnaireResult {
     id: String,
+    proband_id: String,
     name: String,
     diagnosis: Option<Condition>,
-    phenotypes: HashSet<Condition>,
+    phenotypes: Vec<Condition>, // TODO: This should be Option<HashSet<Condition>>, because people can just not answer the question.
     taken_at: Option<DateTime<Utc>>,
 }
 
 impl QuestionnaireResult {
     pub fn new(
-        id: impl Into<String>,
+        id: Option<impl Into<String>>,
+        proband_id: impl Into<String>,
         name: impl Into<String>,
         diagnosis: Option<Condition>,
-        phenotypes: HashSet<Condition>,
+        phenotypes: Vec<Condition>,
         taken_at: Option<&DateTime<Utc>>,
     ) -> Self {
         Self {
-            id: id.into(),
+            id: id
+                .map(Into::into)
+                .unwrap_or_else(|| uuid::Uuid::new_v4().to_string()),
+            proband_id: proband_id.into(),
             name: name.into(),
             diagnosis: diagnosis.clone(),
             phenotypes,
             taken_at: taken_at.copied(),
         }
     }
+
+    pub fn get_unique_phenotypes(&self) -> Vec<(usize, Condition)> {
+        let mut temp = HashMap::new();
+        for (idx, pt) in self.phenotypes.iter().enumerate() {
+            match temp.get(pt.term().id()) {
+                None => {
+                    temp.insert(pt.term().id(), (idx, pt));
+                }
+                Some((_, existing_pt)) => match (pt.severity(), existing_pt.severity()) {
+                    (Some(s), Some(e_s)) => {
+                        if s.as_severity() > e_s.as_severity() {
+                            temp.insert(pt.term().id(), (idx, &pt));
+                        }
+                    }
+                    (Some(_), None) => {
+                        temp.insert(pt.term().id(), (idx, &pt));
+                    }
+                    _ => {}
+                },
+            }
+        }
+        let mut output: Vec<(usize, Condition)> = temp
+            .into_values()
+            .map(|(idx, pt)| (idx, pt.clone()))
+            .collect();
+        output.sort_by_key(|&(idx, _)| idx);
+        output
+    }
 }
 impl ToCsv for Vec<QuestionnaireResult> {
-    fn to_csv<W: Write>(&self, writer: &mut W) -> Result<(), ToCsvError> {
-        let deduplicated: Vec<Vec<_>> = self
-            .iter()
-            .map(|r| -> Result<Vec<_>, ToCsvError> {
-                let mut phenotype_map: std::collections::HashMap<&str, _> =
-                    std::collections::HashMap::new();
-                for p in r.phenotypes.iter() {
-                    let term_id = p.term().id();
-                    let entry = phenotype_map.entry(term_id).or_insert(p);
-
-                    let current_severity = entry
-                        .severity()
-                        .as_ref()
-                        .and_then(|s| s.as_severity())
-                        .ok_or_else(|| ToCsvError::CantParseSeverity {
-                            value: entry.severity().cloned(),
-                        })?;
-
-                    let new_severity = p
-                        .severity()
-                        .as_ref()
-                        .and_then(|s| s.as_severity())
-                        .ok_or_else(|| ToCsvError::CantParseSeverity {
-                            value: p.severity().cloned(),
-                        })?;
-
-                    if new_severity > current_severity {
-                        *entry = p;
-                    }
-                }
-                let mut sorted: Vec<_> = phenotype_map.into_values().collect();
-                sorted.sort_by_key(|p| p.term().id());
-                Ok(sorted)
-            })
-            .collect::<Result<Vec<_>, ToCsvError>>()?;
-
-        let max_phenotypes = deduplicated.iter().map(|p| p.len()).max().unwrap_or(0);
-
-        // Write header
-        writer.write_all(b"id,\
-        instrument_name,taken_at,diagnosis_term_id,diagnosis_term_label,diagnosis_severity_id,diagnosis_severity_label,diagnosis_observed_start,diagnosis_observed_end")?;
-
-        for i in 1..=max_phenotypes {
-            write!(
-                writer,
-                ",phenotype_{i}_term_id,phenotype_{i}_term_label,\
-                phenotype_{i}_severity_id,phenotype_{i}_severity_label,\
-                phenotype_{i}_observed_start,phenotype_{i}_observed_end"
-            )?;
-        }
-        writer.write_all(b"\n")?;
-
-        // Second pass: write data rows using already-deduplicated phenotypes
-        for (result, sorted_phenotypes) in self.iter().zip(deduplicated.iter()) {
-            writer.write_all(escape_csv_field(&result.id).as_bytes())?;
+    fn to_csv<W: Write>(&self, writer: &mut W, filter_duplicates: bool) -> Result<(), ToCsvError> {
+        fn write_row<W: Write>(
+            proband_id: &str,
+            instrument_id: &str,
+            instrument_name: &str,
+            instrument_taken_at: Option<&DateTime<Utc>>,
+            q_idx: usize,
+            condition: &Condition,
+            writer: &mut W,
+        ) -> Result<(), ToCsvError> {
+            writer.write_all(escape_csv_field(proband_id).as_bytes())?;
             writer.write_all(b",")?;
 
-            writer.write_all(escape_csv_field(&result.name).as_bytes())?;
+            writer.write_all(escape_csv_field(instrument_id).as_bytes())?;
             writer.write_all(b",")?;
 
-            if let Some(taken_at) = result.taken_at {
+            writer.write_all(q_idx.to_string().as_bytes())?;
+            writer.write_all(b",")?;
+
+            writer.write_all(escape_csv_field(instrument_name).as_bytes())?;
+            writer.write_all(b",")?;
+
+            if let Some(taken_at) = instrument_taken_at {
                 writer.write_all(escape_csv_field(&taken_at.to_string()).as_bytes())?;
             }
-            writer.write_all(b",")?; // Always write the column separator
+            writer.write_all(b",")?;
 
-            if let Some(diag) = &result.diagnosis {
-                writer.write_all(escape_csv_field(diag.term().id()).as_bytes())?;
-                writer.write_all(b",")?;
-                writer.write_all(escape_csv_field(diag.term().label()).as_bytes())?;
-                writer.write_all(b",")?;
-                writer.write_all(
-                    escape_csv_field(diag.severity().as_ref().map(|s| s.id()).unwrap_or_default())
-                        .as_bytes(),
-                )?;
-                writer.write_all(b",")?;
-                writer.write_all(
-                    escape_csv_field(
-                        diag.severity()
-                            .as_ref()
-                            .map(|s| s.label())
-                            .unwrap_or_default(),
-                    )
-                    .as_bytes(),
-                )?;
-                writer.write_all(b",")?;
-                writer.write_all(format_optional_datetime(diag.observed_start()).as_bytes())?;
-                writer.write_all(b",")?;
-                writer.write_all(format_optional_datetime(diag.observed_end()).as_bytes())?;
-            } else {
-                writer.write_all(b",,,,,")?;
-            }
+            writer.write_all(escape_csv_field("phenotype").as_bytes())?;
+            writer.write_all(b",")?;
 
-            for i in 0..max_phenotypes {
-                writer.write_all(b",")?;
-                if let Some(p) = sorted_phenotypes.get(i) {
-                    writer.write_all(escape_csv_field(p.term().id()).as_bytes())?;
+            writer.write_all(escape_csv_field(condition.term().id()).as_bytes())?;
+            writer.write_all(b",")?;
+
+            writer.write_all(escape_csv_field(condition.term().label()).as_bytes())?;
+            writer.write_all(b",")?;
+
+            match condition.severity() {
+                None => {
                     writer.write_all(b",")?;
-                    writer.write_all(escape_csv_field(p.term().label()).as_bytes())?;
                     writer.write_all(b",")?;
-                    writer.write_all(
-                        escape_csv_field(p.severity().as_ref().map(|s| s.id()).unwrap_or_default())
-                            .as_bytes(),
-                    )?;
+                }
+                Some(s) => {
+                    writer.write_all(escape_csv_field(s.id()).as_bytes())?;
                     writer.write_all(b",")?;
-                    writer.write_all(
-                        escape_csv_field(
-                            p.severity().as_ref().map(|s| s.label()).unwrap_or_default(),
-                        )
-                        .as_bytes(),
-                    )?;
+
+                    writer.write_all(escape_csv_field(s.label()).as_bytes())?;
                     writer.write_all(b",")?;
-                    writer.write_all(format_optional_datetime(p.observed_start()).as_bytes())?;
-                    writer.write_all(b",")?;
-                    writer.write_all(format_optional_datetime(p.observed_end()).as_bytes())?;
-                } else {
-                    writer.write_all(b",,,,,")?;
                 }
             }
 
+            if condition.excluded() {
+                println!("Should write excluded")
+            }
+            writer.write_all(condition.excluded().to_string().as_bytes())?;
+            writer.write_all(b",")?;
+
+            writer.write_all(format_optional_datetime(condition.observed_start()).as_bytes())?;
+            writer.write_all(b",")?;
+            writer.write_all(format_optional_datetime(condition.observed_end()).as_bytes())?;
             writer.write_all(b"\n")?;
+
+            Ok(())
         }
+
+        writer.write_all(b"proband_id,instrument_id,question_idx,instrument_name,taken_at,term_type,term_id,term_label,severity_id,severity_label,excluded,observed_start,observed_end\n")?;
+        for result in self.iter() {
+            if filter_duplicates {
+                for (q_idx, pt) in result.get_unique_phenotypes() {
+                    write_row(
+                        &result.proband_id,
+                        &result.id,
+                        &result.name,
+                        result.taken_at.as_ref(),
+                        q_idx,
+                        &pt,
+                        writer,
+                    )?
+                }
+            } else {
+                for (q_idx, pt) in result.phenotypes.iter().enumerate() {
+                    write_row(
+                        &result.proband_id,
+                        &result.id,
+                        &result.name,
+                        result.taken_at.as_ref(),
+                        q_idx,
+                        pt,
+                        writer,
+                    )?
+                }
+            }
+        }
+
         Ok(())
     }
 }
@@ -166,7 +171,7 @@ impl fmt::Display for QuestionnaireResult {
         writeln!(f, "╰─────────────────────────────────────────╯")?;
         writeln!(f)?;
 
-        writeln!(f, "  ID:        {}", self.id)?;
+        writeln!(f, "  ID:        {}", self.proband_id)?;
 
         writeln!(f)?;
 
@@ -202,11 +207,12 @@ mod tests {
     use crate::condition::Condition;
     use crate::term::{PhenotypeTerms, SeverityTerms};
     use chrono::TimeZone;
-    use std::collections::HashSet;
 
     fn to_csv_string(results: &Vec<QuestionnaireResult>) -> String {
         let mut buf = Vec::new();
-        results.to_csv(&mut buf).expect("to_csv should not fail");
+        results
+            .to_csv(&mut buf, true)
+            .expect("to_csv should not fail");
         String::from_utf8(buf).expect("output should be valid UTF-8")
     }
 
@@ -224,10 +230,11 @@ mod tests {
     #[test]
     fn test_to_csv_no_diagnosis_no_phenotypes() {
         let results = vec![QuestionnaireResult::new(
-            "result-1",
+            Some("result-1"),
+            "pp1",
             "PHQ-9",
             None,
-            HashSet::new(),
+            Vec::new(),
             None,
         )];
         let csv = to_csv_string(&results);
@@ -242,15 +249,21 @@ mod tests {
         let phenotype = Condition::new(
             PhenotypeTerms::LowSelfEsteem,
             SeverityTerms::Mild,
+            false,
             Some(Utc.with_ymd_and_hms(2023, 3, 15, 0, 0, 0).unwrap()),
             None,
         );
 
-        let mut phenotypes = HashSet::new();
-        phenotypes.insert(phenotype);
+        let mut phenotypes = Vec::new();
+        phenotypes.push(phenotype);
 
         let results = vec![QuestionnaireResult::new(
-            "result-4", "PHQ-9", None, phenotypes, None,
+            Some("result-4"),
+            "pp1",
+            "PHQ-9",
+            None,
+            phenotypes,
+            None,
         )];
         let csv = to_csv_string(&results);
         let lines: Vec<&str> = csv.lines().collect();
@@ -276,22 +289,25 @@ mod tests {
         let phenotype_mild = Condition::new(
             PhenotypeTerms::Guilt,
             SeverityTerms::Mild,
+            false,
             Some(Utc.with_ymd_and_hms(2023, 3, 15, 0, 0, 0).unwrap()),
             None,
         );
         let phenotype_severe = Condition::new(
             PhenotypeTerms::Guilt,
             SeverityTerms::Severe,
+            false,
             Some(Utc.with_ymd_and_hms(2023, 3, 15, 0, 0, 0).unwrap()),
             Some(Utc.with_ymd_and_hms(2023, 6, 1, 0, 0, 0).unwrap()),
         );
 
-        let mut phenotypes = HashSet::new();
-        phenotypes.insert(phenotype_mild);
-        phenotypes.insert(phenotype_severe);
+        let mut phenotypes = Vec::new();
+        phenotypes.push(phenotype_mild);
+        phenotypes.push(phenotype_severe);
 
         let results = vec![QuestionnaireResult::new(
-            "result-dedup",
+            Some("result-dedup"),
+            "pp1",
             "PHQ-9",
             None,
             phenotypes,
@@ -314,15 +330,16 @@ mod tests {
         let phenotype = Condition::new(
             PhenotypeTerms::LowSelfEsteem,
             SeverityTerms::Mild,
+            false,
             None,
             None,
         );
-        let mut phenotypes = HashSet::new();
-        phenotypes.insert(phenotype);
+        let mut phenotypes = Vec::new();
+        phenotypes.push(phenotype);
 
         let results = vec![
-            QuestionnaireResult::new("result-5", "PHQ-9", None, HashSet::new(), None),
-            QuestionnaireResult::new("result-6", "PHQ-9", None, phenotypes, None),
+            QuestionnaireResult::new(Some("result-5"), "pp1", "PHQ-9", None, Vec::new(), None),
+            QuestionnaireResult::new(Some("result-6"), "pp1", "PHQ-9", None, phenotypes, None),
         ];
         let csv = to_csv_string(&results);
         let lines: Vec<&str> = csv.lines().collect();
@@ -339,10 +356,11 @@ mod tests {
     #[test]
     fn test_to_csv_field_with_comma_is_quoted() {
         let results = vec![QuestionnaireResult::new(
-            "id,with,commas",
+            Some("id,with,commas"),
+            "pp1",
             "PHQ-9",
             None,
-            HashSet::new(),
+            Vec::new(),
             None,
         )];
         let csv = to_csv_string(&results);

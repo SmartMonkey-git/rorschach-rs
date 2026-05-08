@@ -1,7 +1,7 @@
 #[derive(Debug)]
 pub struct Answer {
     idx: usize,
-    score: f32,
+    score: f32, //TODO: Should be option, because a proband can just skip questions.
 }
 
 impl Answer {

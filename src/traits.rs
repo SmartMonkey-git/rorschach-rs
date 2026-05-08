@@ -7,5 +7,5 @@ pub trait CalculateScore: Debug {
 }
 
 pub trait ToCsv {
-    fn to_csv<W: Write>(&self, writer: &mut W) -> Result<(), ToCsvError>;
+    fn to_csv<W: Write>(&self, writer: &mut W, filter_duplicates: bool) -> Result<(), ToCsvError>;
 }

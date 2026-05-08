@@ -6,6 +6,7 @@ use std::fmt;
 pub struct Condition {
     term: Term,
     severity: Option<Term>,
+    excluded: bool,
     observed_start: Option<DateTime<Utc>>,
     observed_end: Option<DateTime<Utc>>,
 }
@@ -15,6 +16,7 @@ impl Condition {
         Self {
             term: term.into(),
             severity: Some(severity.into()),
+            excluded: false,
             observed_start: None,
             observed_end: None,
         }
@@ -24,12 +26,14 @@ impl Condition {
     pub(crate) fn new(
         term: impl Into<Term>,
         severity: impl Into<Term>,
+        excluded: bool,
         observed_start: Option<DateTime<Utc>>,
         observed_end: Option<DateTime<Utc>>,
     ) -> Self {
         Self {
             term: term.into(),
             severity: Some(severity.into()),
+            excluded,
             observed_start,
             observed_end,
         }
@@ -47,11 +51,14 @@ impl Condition {
     pub fn observed_end(&self) -> Option<&DateTime<Utc>> {
         self.observed_end.as_ref()
     }
-
+    pub fn excluded(&self) -> bool {
+        self.excluded
+    }
     pub fn from_type(term: impl Into<Term>) -> Self {
         Self {
             term: term.into(),
             severity: None,
+            excluded: false,
             observed_start: None,
             observed_end: None,
         }
@@ -64,6 +71,9 @@ impl Condition {
 
     pub fn set_severity(&mut self, severity: &Term) {
         self.severity = Some(severity.clone());
+    }
+    pub fn set_excluded(&mut self, excluded: bool) {
+        self.excluded = excluded;
     }
 }
 
