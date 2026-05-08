@@ -164,8 +164,8 @@ mod tests {
 
     #[test]
     fn test_calculate_severity() {
-        let answer = Answer::new(0, 3.0);
-        let q = QuestionnaireItem::new(None, PhenotypeTerms::AbnormalEatingBehavior, 4.0);
+        let answer = Answer::new(0, 4.0);
+        let q = QuestionnaireItem::new(None, PhenotypeTerms::AbnormalEatingBehavior, 5.0);
         let severity = Questionnaire::calculate_severity(&answer, &q).unwrap();
 
         assert_eq!(severity, Term::from(SeverityTerms::Profound));

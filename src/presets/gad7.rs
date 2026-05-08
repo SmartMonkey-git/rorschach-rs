@@ -8,7 +8,7 @@ use maplit::btreemap;
 
 pub(crate) fn gad7() -> Questionnaire {
     Questionnaire::new(
-        "GAD-9",
+        "GAD-7",
         vec![
             QuestionnaireItem::new(
                 Some("Feeling nervous, anxious, or on edge".to_string()),

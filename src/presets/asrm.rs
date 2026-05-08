@@ -9,15 +9,15 @@ pub(crate) fn asrm() -> Questionnaire {
     Questionnaire::new(
         "ASRM",
         vec![
-            QuestionnaireItem::new(Some("".to_string()), PhenotypeTerms::Euphoria, 4.0),
-            QuestionnaireItem::new(Some("".to_string()), PhenotypeTerms::Grandiosity, 4.0),
+            QuestionnaireItem::new(Some("".to_string()), PhenotypeTerms::Euphoria, 5.0),
+            QuestionnaireItem::new(Some("".to_string()), PhenotypeTerms::Grandiosity, 5.0),
             QuestionnaireItem::new(
                 Some("".to_string()),
                 PhenotypeTerms::DecreasedNeedForSleep,
-                4.0,
+                5.0,
             ),
-            QuestionnaireItem::new(Some("".to_string()), PhenotypeTerms::PressuredSpeech, 4.0),
-            QuestionnaireItem::new(Some("".to_string()), PhenotypeTerms::Agitation, 4.0),
+            QuestionnaireItem::new(Some("".to_string()), PhenotypeTerms::PressuredSpeech, 5.0),
+            QuestionnaireItem::new(Some("".to_string()), PhenotypeTerms::Agitation, 5.0),
         ],
         btreemap! {
                 0 => None,
