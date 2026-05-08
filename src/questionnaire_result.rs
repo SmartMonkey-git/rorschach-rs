@@ -33,7 +33,7 @@ impl QuestionnaireResult {
         }
     }
 }
-impl ToCsv<Vec<QuestionnaireResult>> for Vec<QuestionnaireResult> {
+impl ToCsv for Vec<QuestionnaireResult> {
     fn to_csv<W: Write>(&self, writer: &mut W) -> Result<(), ToCsvError> {
         let deduplicated: Vec<Vec<_>> = self
             .iter()
@@ -74,7 +74,7 @@ impl ToCsv<Vec<QuestionnaireResult>> for Vec<QuestionnaireResult> {
 
         // Write header
         writer.write_all(b"id,\
-        name,taken_at,diagnosis_term_id,diagnosis_term_label,diagnosis_severity_id,diagnosis_severity_label,diagnosis_observed_start,diagnosis_observed_end")?;
+        instrument_name,taken_at,diagnosis_term_id,diagnosis_term_label,diagnosis_severity_id,diagnosis_severity_label,diagnosis_observed_start,diagnosis_observed_end")?;
 
         for i in 1..=max_phenotypes {
             write!(

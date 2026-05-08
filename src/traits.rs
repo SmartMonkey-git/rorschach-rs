@@ -6,6 +6,6 @@ pub trait CalculateScore: Debug {
     fn calculate_score(&self, scores: &[f32]) -> f32;
 }
 
-pub trait ToCsv<T> {
+pub trait ToCsv {
     fn to_csv<W: Write>(&self, writer: &mut W) -> Result<(), ToCsvError>;
 }
