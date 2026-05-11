@@ -14,7 +14,7 @@ pub(crate) fn phq9() -> Questionnaire {
         ),
         QuestionnaireItem::new(
             Some("Feeling down, depressed, or hopeless".to_string()),
-            PhenotypeTerms::Depression, 4.0
+            PhenotypeTerms::PathologicalSadness, 4.0
         ),
         QuestionnaireItem::new(
             Some("Trouble falling or staying asleep, or sleeping too much".to_string()),
@@ -38,7 +38,7 @@ pub(crate) fn phq9() -> Questionnaire {
         ),
         QuestionnaireItem::new(
             Some("Moving or speaking so slowly that other people could have noticed? Or the opposite — being so fidgety or restless that you have been moving around a lot more than usual".to_string()),
-            PhenotypeTerms::AbnormalVolitionalState, 4.0
+            PhenotypeTerms::PsychomotorDeterioration, 4.0
         ),
         QuestionnaireItem::new(
             Some("Thoughts that you would be better off dead or of hurting yourself in some way".to_string()),
