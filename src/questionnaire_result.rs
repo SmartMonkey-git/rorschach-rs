@@ -49,11 +49,11 @@ impl QuestionnaireResult {
                     Some((_, existing_pt)) => match (pt.severity(), existing_pt.severity()) {
                         (Some(s), Some(e_s)) => {
                             if s.as_severity() > e_s.as_severity() {
-                                temp.insert(pt.term().id(), (idx, &pt));
+                                temp.insert(pt.term().id(), (idx, pt));
                             }
                         }
                         (Some(_), None) => {
-                            temp.insert(pt.term().id(), (idx, &pt));
+                            temp.insert(pt.term().id(), (idx, pt));
                         }
                         _ => {}
                     },
@@ -255,8 +255,7 @@ mod tests {
             None,
         );
 
-        let mut phenotypes = Vec::new();
-        phenotypes.push(Some(phenotype));
+        let phenotypes = vec![Some(phenotype)];
 
         let results = vec![QuestionnaireResult::new(
             Some("result-4"),
@@ -302,9 +301,7 @@ mod tests {
             Some(Utc.with_ymd_and_hms(2023, 6, 1, 0, 0, 0).unwrap()),
         );
 
-        let mut phenotypes = Vec::new();
-        phenotypes.push(Some(phenotype_mild));
-        phenotypes.push(Some(phenotype_severe));
+        let phenotypes = vec![Some(phenotype_mild), Some(phenotype_severe)];
 
         let results = vec![QuestionnaireResult::new(
             Some("result-dedup"),
@@ -335,8 +332,7 @@ mod tests {
             None,
             None,
         );
-        let mut phenotypes = Vec::new();
-        phenotypes.push(Some(phenotype));
+        let phenotypes = vec![Some(phenotype)];
 
         let results = vec![
             QuestionnaireResult::new(Some("result-5"), "pp1", "PHQ-9", None, Vec::new(), None),

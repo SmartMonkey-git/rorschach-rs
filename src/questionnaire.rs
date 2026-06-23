@@ -161,7 +161,6 @@ impl PartialEq for Questionnaire {
 
 #[cfg(test)]
 mod tests {
-    use crate::answer::Answer;
     use crate::questionnaire::Questionnaire;
     use crate::questionnaire_item::QuestionnaireItem;
     use crate::score_calculations::sum_score::SumScore;
