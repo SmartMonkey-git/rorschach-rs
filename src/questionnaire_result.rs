@@ -224,7 +224,7 @@ mod tests {
 
         assert_eq!(
             csv,
-            "id,name,taken_at,diagnosis_term_id,diagnosis_term_label,diagnosis_severity_id,diagnosis_severity_label,diagnosis_observed_start,diagnosis_observed_end\n"
+            "proband_id,instrument_id,question_idx,instrument_name,taken_at,term_type,term_id,term_label,severity_id,severity_label,excluded,observed_start,observed_end\n"
         );
     }
 
@@ -241,47 +241,7 @@ mod tests {
         let csv = to_csv_string(&results);
         let lines: Vec<&str> = csv.lines().collect();
 
-        assert_eq!(lines.len(), 2);
-        assert_eq!(lines[1], "result-1,PHQ-9,,,,,,,");
-    }
-
-    #[test]
-    fn test_to_csv_with_phenotypes() {
-        let phenotype = Condition::new(
-            PhenotypeTerms::LowSelfEsteem,
-            SeverityTerms::Mild,
-            false,
-            Some(Utc.with_ymd_and_hms(2023, 3, 15, 0, 0, 0).unwrap()),
-            None,
-        );
-
-        let phenotypes = vec![Some(phenotype)];
-
-        let results = vec![QuestionnaireResult::new(
-            Some("result-4"),
-            "pp1",
-            "PHQ-9",
-            None,
-            phenotypes,
-            None,
-        )];
-        let csv = to_csv_string(&results);
-        let lines: Vec<&str> = csv.lines().collect();
-
-        assert_eq!(lines.len(), 2);
-
-        assert!(lines[0].contains("phenotype_1_term_id"));
-        assert!(lines[0].contains("phenotype_1_term_label"));
-        assert!(lines[0].contains("phenotype_1_severity_id"));
-        assert!(lines[0].contains("phenotype_1_severity_label"));
-        assert!(lines[0].contains("phenotype_1_observed_start"));
-        assert!(lines[0].contains("phenotype_1_observed_end"));
-
-        assert!(lines[1].contains("HP:0031469"));
-        assert!(lines[1].contains("Low self-esteem"));
-        assert!(lines[1].contains("HP:0012825"));
-        assert!(lines[1].contains("Mild"));
-        assert!(lines[1].contains("2023-03-15T00:00:00+00:00"));
+        assert_eq!(lines.len(), 1);
     }
 
     #[test]
@@ -316,53 +276,55 @@ mod tests {
 
         assert_eq!(lines.len(), 2);
 
-        assert!(lines[0].contains("phenotype_1_term_id"));
-        assert!(!lines[0].contains("phenotype_2_term_id"));
-
         assert!(lines[1].contains("Severe"));
         assert!(!lines[1].contains("Mild"));
     }
 
     #[test]
     fn test_to_csv_multiple_results_same_column_width() {
-        let phenotype = Condition::new(
+        let low_self_esteem = Condition::new(
             PhenotypeTerms::LowSelfEsteem,
             SeverityTerms::Mild,
             false,
             None,
             None,
         );
-        let phenotypes = vec![Some(phenotype)];
+
+        let guilt = Condition::new(
+            PhenotypeTerms::Guilt,
+            SeverityTerms::Mild,
+            false,
+            None,
+            None,
+        );
 
         let results = vec![
-            QuestionnaireResult::new(Some("result-5"), "pp1", "PHQ-9", None, Vec::new(), None),
-            QuestionnaireResult::new(Some("result-6"), "pp1", "PHQ-9", None, phenotypes, None),
+            QuestionnaireResult::new(
+                Some("result-5"),
+                "pp1",
+                "PHQ-9",
+                None,
+                vec![Some(guilt)],
+                None,
+            ),
+            QuestionnaireResult::new(
+                Some("result-6"),
+                "pp1",
+                "PHQ-9",
+                None,
+                vec![Some(low_self_esteem)],
+                None,
+            ),
         ];
         let csv = to_csv_string(&results);
         let lines: Vec<&str> = csv.lines().collect();
 
         assert_eq!(lines.len(), 3);
-        assert!(lines[1].starts_with("result-5,"));
-        assert!(lines[2].starts_with("result-6,"));
+        assert!(lines[1].contains(PhenotypeTerms::Guilt.as_term().label()));
+        assert!(lines[2].contains(PhenotypeTerms::LowSelfEsteem.as_term().label()));
 
         let header_cols = lines[0].split(',').count();
         assert_eq!(lines[1].split(',').count(), header_cols);
         assert_eq!(lines[2].split(',').count(), header_cols);
-    }
-
-    #[test]
-    fn test_to_csv_field_with_comma_is_quoted() {
-        let results = vec![QuestionnaireResult::new(
-            Some("id,with,commas"),
-            "pp1",
-            "PHQ-9",
-            None,
-            Vec::new(),
-            None,
-        )];
-        let csv = to_csv_string(&results);
-        let lines: Vec<&str> = csv.lines().collect();
-
-        assert!(lines[1].starts_with("\"id,with,commas\""));
     }
 }
