@@ -31,11 +31,11 @@ impl QuestionnaireItem {
         score: i16,
     ) -> Result<&Condition, RorschachError> {
         let answers = self.conditions.get(&question_index).ok_or(
-            RorschachError::IndexNonExistingQuestion {
-                0: question_index,
-                1: self.stem.clone().unwrap(), //TODO
-                2: self.n_answers as usize,
-            },
+            RorschachError::IndexNonExistingQuestion(
+                question_index,
+                self.stem.clone().unwrap(), //TODO
+                self.n_answers as usize,
+            ),
         )?;
 
         let condition =

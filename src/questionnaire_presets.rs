@@ -1,12 +1,14 @@
 use crate::presets::asrm::asrm;
 use crate::presets::gad7::gad7;
 use crate::presets::phq9::phq9;
+use crate::presets::ymrs::ymrs;
 use crate::questionnaire::Questionnaire;
 
 pub enum QuestionnairePresets {
     PHQ9,
     GAD7,
     ASRM,
+    YMRS,
 }
 
 impl QuestionnairePresets {
@@ -20,6 +22,9 @@ impl QuestionnairePresets {
             }
             QuestionnairePresets::ASRM => {
                 asrm().expect("Should always work, because its hard coded")
+            }
+            &QuestionnairePresets::YMRS => {
+                ymrs().expect("Should always work, because its hard coded")
             }
         }
     }
