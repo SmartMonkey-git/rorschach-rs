@@ -13,6 +13,7 @@ maplit = "1.0.2"
 chrono = "0.4.41"
 serde = { version = "1.0.228", features = ["derive"] }
 strum = { version = "0.28", features = ["derive"] }
+uuid = { version = "1.23.1", features = ["v4"] }
 
 [dev-dependencies]
 csv = "1.3"

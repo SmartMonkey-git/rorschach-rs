@@ -72,7 +72,7 @@ pub enum PhenotypeTerms {
     AbnormalEatingBehavior,
     LowSelfEsteem,
     Guilt,
-    AbnormalVolitionalState,
+    PsychomotorDeterioration,
     SuicidalIdeation,
     DiminishedAbilityToConcentrate,
     Anxiety,
@@ -85,6 +85,8 @@ pub enum PhenotypeTerms {
     Grandiosity,
     DecreasedNeedForSleep,
     PressuredSpeech,
+    PathologicalSadness,
+    Mania,
 }
 
 impl PhenotypeTerms {
@@ -99,8 +101,8 @@ impl PhenotypeTerms {
             }
             PhenotypeTerms::LowSelfEsteem => Term::new("HP:0031469", "Low self-esteem"),
             PhenotypeTerms::Guilt => Term::new("HP:6000011", "Guilt"),
-            PhenotypeTerms::AbnormalVolitionalState => {
-                Term::new("HP:0025780", "Abnormal Volitional state")
+            PhenotypeTerms::PsychomotorDeterioration => {
+                Term::new("HP:0002361", "Psychomotor deterioration")
             }
             PhenotypeTerms::SuicidalIdeation => Term::new(
                 "HP:0031589",
@@ -122,6 +124,8 @@ impl PhenotypeTerms {
                 Term::new("HP:5200276", "Decreased need for sleep")
             }
             PhenotypeTerms::PressuredSpeech => Term::new("HP:5200265", "Pressured speech"),
+            PhenotypeTerms::PathologicalSadness => Term::new("HP:5200273", "Pathological sadness"),
+            PhenotypeTerms::Mania => Term::new("HP:0100754", "Mania"),
         }
     }
 }
