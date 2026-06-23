@@ -91,6 +91,11 @@ pub enum PhenotypeTerms {
     AggressiveBehavior,
     LackOfInsight,
     Psychosis,
+    FlightOfIdeas,
+    DisorderOfThoughtContent,
+    AbnormallyRapidThoughtProcess,
+    Delusion,
+    SelfNeglect,
 }
 
 impl PhenotypeTerms {
@@ -132,6 +137,15 @@ impl PhenotypeTerms {
             PhenotypeTerms::AggressiveBehavior => Term::new("HP:0000718", "Aggressive behavior"),
             PhenotypeTerms::LackOfInsight => Term::new("HP:0000757", "Lack of insight"),
             PhenotypeTerms::Psychosis => Term::new("HP:0000709", "Psychosis"),
+            PhenotypeTerms::FlightOfIdeas => Term::new("HP:5200234", "Flight of ideas"),
+            PhenotypeTerms::DisorderOfThoughtContent => {
+                Term::new("HP:0025779", "Disorder of thought content")
+            }
+            PhenotypeTerms::AbnormallyRapidThoughtProcess => {
+                Term::new("HP:0025781", "Abnormally rapid thought process")
+            }
+            PhenotypeTerms::Delusion => Term::new("HP:0000746", "Delusion"),
+            PhenotypeTerms::SelfNeglect => Term::new("HP:0025479", "Self-neglect"),
         }
     }
 }

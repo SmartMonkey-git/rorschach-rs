@@ -13,7 +13,7 @@ pub struct QuestionnaireResult {
     proband_id: String,
     name: String,
     diagnosis: Option<Condition>,
-    conditions: Vec<Option<Vec<Condition>>>,
+    phenotypes: Vec<Option<Condition>>,
     taken_at: Option<DateTime<Utc>>,
 }
 
@@ -23,7 +23,7 @@ impl QuestionnaireResult {
         proband_id: impl Into<String>,
         name: impl Into<String>,
         diagnosis: Option<Condition>,
-        conditions: Vec<Option<Vec<Condition>>>,
+        phenotypes: Vec<Option<Condition>>,
         taken_at: Option<&DateTime<Utc>>,
     ) -> Self {
         Self {
@@ -33,27 +33,27 @@ impl QuestionnaireResult {
             proband_id: proband_id.into(),
             name: name.into(),
             diagnosis: diagnosis.clone(),
-            conditions,
+            phenotypes,
             taken_at: taken_at.copied(),
         }
     }
 
     pub fn get_unique_phenotypes(&self) -> Vec<(usize, Condition)> {
         let mut temp = HashMap::new();
-        for (idx, condition) in self.conditions.iter().flatten().enumerate() {
-            for c in condition {
-                match temp.get(c.term().id()) {
+        for (idx, pt_opt) in self.phenotypes.iter().enumerate() {
+            if let Some(pt) = pt_opt {
+                match temp.get(pt.term().id()) {
                     None => {
-                        temp.insert(c.term().id(), (idx, c));
+                        temp.insert(pt.term().id(), (idx, pt));
                     }
-                    Some((_, existing_pt)) => match (c.severity(), existing_pt.severity()) {
+                    Some((_, existing_pt)) => match (pt.severity(), existing_pt.severity()) {
                         (Some(s), Some(e_s)) => {
                             if s.as_severity() > e_s.as_severity() {
-                                temp.insert(c.term().id(), (idx, c));
+                                temp.insert(pt.term().id(), (idx, pt));
                             }
                         }
                         (Some(_), None) => {
-                            temp.insert(c.term().id(), (idx, c));
+                            temp.insert(pt.term().id(), (idx, pt));
                         }
                         _ => {}
                     },
@@ -145,15 +145,15 @@ impl ToCsv for Vec<QuestionnaireResult> {
                     )?
                 }
             } else {
-                for (q_idx, conditions) in result.conditions.iter().flatten().enumerate() {
-                    for c in conditions {
+                for (q_idx, pt_opt) in result.phenotypes.iter().enumerate() {
+                    if let Some(pt) = pt_opt {
                         write_row(
                             &result.proband_id,
                             &result.id,
                             &result.name,
                             result.taken_at.as_ref(),
                             q_idx,
-                            c,
+                            pt,
                             writer,
                         )?
                     }
@@ -191,10 +191,10 @@ impl fmt::Display for QuestionnaireResult {
         writeln!(f)?;
 
         writeln!(f, "  Observed Phenotypes:")?;
-        if self.conditions.is_empty() {
+        if self.phenotypes.is_empty() {
             writeln!(f, "       None recorded.")?;
         } else {
-            for phenotype in &self.conditions {
+            for phenotype in &self.phenotypes {
                 writeln!(f, "       •  {:?}", phenotype)?;
             }
         }
@@ -248,25 +248,27 @@ mod tests {
     fn test_to_csv_deduplicates_phenotypes_keeping_highest_severity() {
         let phenotype_mild = Condition::new(
             PhenotypeTerms::Guilt,
-            Some(SeverityTerms::Mild.as_term()),
+            Some(SeverityTerms::Mild.into()),
             false,
             Some(Utc.with_ymd_and_hms(2023, 3, 15, 0, 0, 0).unwrap()),
             None,
         );
         let phenotype_severe = Condition::new(
             PhenotypeTerms::Guilt,
-            Some(SeverityTerms::Severe.as_term()),
+            Some(SeverityTerms::Severe.into()),
             false,
             Some(Utc.with_ymd_and_hms(2023, 3, 15, 0, 0, 0).unwrap()),
             Some(Utc.with_ymd_and_hms(2023, 6, 1, 0, 0, 0).unwrap()),
         );
+
+        let phenotypes = vec![Some(phenotype_mild), Some(phenotype_severe)];
 
         let results = vec![QuestionnaireResult::new(
             Some("result-dedup"),
             "pp1",
             "PHQ-9",
             None,
-            vec![Some(vec![phenotype_mild]), Some(vec![phenotype_severe])],
+            phenotypes,
             None,
         )];
         let csv = to_csv_string(&results);
@@ -282,7 +284,7 @@ mod tests {
     fn test_to_csv_multiple_results_same_column_width() {
         let low_self_esteem = Condition::new(
             PhenotypeTerms::LowSelfEsteem,
-            Some(SeverityTerms::Mild.as_term()),
+            Some(SeverityTerms::Mild.into()),
             false,
             None,
             None,
@@ -290,7 +292,7 @@ mod tests {
 
         let guilt = Condition::new(
             PhenotypeTerms::Guilt,
-            Some(SeverityTerms::Mild.as_term()),
+            Some(SeverityTerms::Mild.into()),
             false,
             None,
             None,
@@ -302,7 +304,7 @@ mod tests {
                 "pp1",
                 "PHQ-9",
                 None,
-                vec![Some(vec![guilt])],
+                vec![Some(guilt)],
                 None,
             ),
             QuestionnaireResult::new(
@@ -310,7 +312,7 @@ mod tests {
                 "pp1",
                 "PHQ-9",
                 None,
-                vec![Some(vec![low_self_esteem])],
+                vec![Some(low_self_esteem)],
                 None,
             ),
         ];

@@ -11,9 +11,9 @@ use maplit::btreemap;
 
 pub(crate) fn gad7() -> Result<Questionnaire, RorschachError> {
     let severities = vec![
-        SeverityTerms::Borderline,
-        SeverityTerms::Moderate,
-        SeverityTerms::Profound,
+        (1, SeverityTerms::Borderline),
+        (2, SeverityTerms::Moderate),
+        (3, SeverityTerms::Profound),
     ];
 
     let builder = QuestionnaireBuilder::new("GAD-7", Box::new(SumScore))
@@ -32,49 +32,49 @@ pub(crate) fn gad7() -> Result<Questionnaire, RorschachError> {
                 .conditions(
                     0,
                     ConditionBuilder::new(PhenotypeTerms::Anxiety)
-                        .build_with_severities(severities.as_slice(), true)?,
+                        .build_with_severities(severities.as_slice(), true),
                 ),
             QuestionnaireItemBuilder::new(4)
                 .stem("Not being able to stop or control worrying") // TODO: Needs to get its own phenotype, current one is wrong
                 .conditions(
                     1,
                     ConditionBuilder::new(PhenotypeTerms::Anxiety)
-                        .build_with_severities(severities.as_slice(), true)?,
+                        .build_with_severities(severities.as_slice(), true),
                 ),
             QuestionnaireItemBuilder::new(4)
                 .stem("Worrying too much about different things")
                 .conditions(
                     2,
                     ConditionBuilder::new(PhenotypeTerms::Ruminations)
-                        .build_with_severities(severities.as_slice(), true)?,
+                        .build_with_severities(severities.as_slice(), true),
                 ),
             QuestionnaireItemBuilder::new(4)
                 .stem("Trouble relaxing")
                 .conditions(
                     3,
                     ConditionBuilder::new(PhenotypeTerms::Agitation)
-                        .build_with_severities(severities.as_slice(), true)?,
+                        .build_with_severities(severities.as_slice(), true),
                 ),
             QuestionnaireItemBuilder::new(4)
                 .stem("Being so restless that it is hard to sit still")
                 .conditions(
                     4,
                     ConditionBuilder::new(PhenotypeTerms::Restlessness)
-                        .build_with_severities(severities.as_slice(), true)?,
+                        .build_with_severities(severities.as_slice(), true),
                 ),
             QuestionnaireItemBuilder::new(4)
                 .stem("Becoming easily annoyed or irritable")
                 .conditions(
                     5,
                     ConditionBuilder::new(PhenotypeTerms::Irritability)
-                        .build_with_severities(severities.as_slice(), true)?,
+                        .build_with_severities(severities.as_slice(), true),
                 ),
             QuestionnaireItemBuilder::new(4)
                 .stem("Feeling afraid, as if something awful might happen")
                 .conditions(
                     6,
                     ConditionBuilder::new(PhenotypeTerms::AnticipatoryAnxiety)
-                        .build_with_severities(severities.as_slice(), true)?,
+                        .build_with_severities(severities.as_slice(), true),
                 ),
         ]);
 

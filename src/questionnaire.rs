@@ -89,7 +89,7 @@ impl Questionnaire {
             });
         }
 
-        let mut conditions: Vec<Option<Vec<Condition>>> = Vec::new();
+        let mut conditions: Vec<Option<Condition>> = Vec::new();
         for (answer, question) in answers.iter().zip(self.items.iter()) {
             match answer.score() {
                 None => {
@@ -97,21 +97,16 @@ impl Questionnaire {
                 }
                 Some(score) => {
                     //TODO: It might not be true that the marking the first answer for a question means to exclude the phenotype.
-                    let mut eval_result = question.evaluate(score as i16).to_vec();
+                    let mut eval_result = question.evaluate(answer.idx(), score as i16)?.clone();
 
-                    eval_result
-                        .iter_mut()
-                        .for_each(|c| self.set_time(c, taken_at));
+                    self.set_time(&mut eval_result, taken_at);
 
                     conditions.push(Some(eval_result));
                 }
             }
         }
 
-        let diagnosis = match self.get_diagnosis(total_score, taken_at)? {
-            None => None,
-            Some(dia) => Some(vec![dia]),
-        };
+        let diagnosis = self.get_diagnosis(total_score, taken_at)?;
         conditions.push(diagnosis);
         let diagnosis = self.get_diagnosis(total_score, taken_at)?;
         let result = QuestionnaireResult::new(

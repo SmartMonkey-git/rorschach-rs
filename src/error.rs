@@ -22,6 +22,12 @@ pub enum RorschachError {
     NoMatchingDiagnosis { found_score: f32 },
     #[error("Numerical Severity needs to be normalized between 0-1. Got: {0}")]
     CantMapSeverity(f32),
+    #[error("{0}")]
+    BuildingError(String),
+    #[error("Tried to index {0} for question '{1}', max index {2}")]
+    IndexNonExistingQuestion(usize, String, usize),
+    #[error("Tried to score {0} question '{1}'")]
+    IndexNonExsistingQuestionScore(i16, String),
 }
 
 #[derive(Debug, Error)]

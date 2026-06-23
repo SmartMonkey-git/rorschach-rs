@@ -2,6 +2,7 @@ use crate::condition::Condition;
 use crate::error::RorschachError;
 use crate::term::{SeverityTerms, Term};
 use chrono::{DateTime, Utc};
+use std::collections::HashMap;
 use strum::EnumCount;
 
 #[derive(Debug, Clone)]
@@ -91,27 +92,21 @@ impl ConditionBuilder {
             self.observed_end,
         )
     }
-
     pub fn build_with_severities(
         self,
-        severities: &[SeverityTerms],
+        entries: &[(i16, SeverityTerms)],
         excluded: bool,
-    ) -> Result<Vec<Condition>, RorschachError> {
-        let mut conditions = vec![];
+    ) -> HashMap<i16, Condition> {
+        let mut conditions: HashMap<i16, Condition> = entries
+            .iter()
+            .map(|(idx, s)| (*idx, self.clone().severity(s.into()).build()))
+            .collect();
 
         if excluded {
-            let new = self.clone().exclude();
-            conditions.push(new.build());
+            conditions.insert(0, self.clone().exclude().build());
         }
 
-        for s in severities {
-            let mut new = self.clone();
-
-            new = new.severity(s.into());
-
-            conditions.push(new.build());
-        }
-        Ok(conditions)
+        conditions
     }
 }
 
