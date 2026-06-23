@@ -86,6 +86,7 @@ pub enum PhenotypeTerms {
     DecreasedNeedForSleep,
     PressuredSpeech,
     PathologicalSadness,
+    Mania,
 }
 
 impl PhenotypeTerms {
@@ -124,6 +125,7 @@ impl PhenotypeTerms {
             }
             PhenotypeTerms::PressuredSpeech => Term::new("HP:5200265", "Pressured speech"),
             PhenotypeTerms::PathologicalSadness => Term::new("HP:5200273", "Pathological sadness"),
+            PhenotypeTerms::Mania => Term::new("HP:0100754", "Mania"),
         }
     }
 }

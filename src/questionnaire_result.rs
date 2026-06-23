@@ -13,7 +13,7 @@ pub struct QuestionnaireResult {
     proband_id: String,
     name: String,
     diagnosis: Option<Condition>,
-    phenotypes: Vec<Condition>, // TODO: This should be Option<HashSet<Condition>>, because people can just not answer the question.
+    phenotypes: Vec<Option<Condition>>, // TODO: This should be Option<HashSet<Condition>>, because people can just not answer the question.
     taken_at: Option<DateTime<Utc>>,
 }
 
@@ -23,7 +23,7 @@ impl QuestionnaireResult {
         proband_id: impl Into<String>,
         name: impl Into<String>,
         diagnosis: Option<Condition>,
-        phenotypes: Vec<Condition>,
+        phenotypes: Vec<Option<Condition>>,
         taken_at: Option<&DateTime<Utc>>,
     ) -> Self {
         Self {
@@ -40,22 +40,24 @@ impl QuestionnaireResult {
 
     pub fn get_unique_phenotypes(&self) -> Vec<(usize, Condition)> {
         let mut temp = HashMap::new();
-        for (idx, pt) in self.phenotypes.iter().enumerate() {
-            match temp.get(pt.term().id()) {
-                None => {
-                    temp.insert(pt.term().id(), (idx, pt));
-                }
-                Some((_, existing_pt)) => match (pt.severity(), existing_pt.severity()) {
-                    (Some(s), Some(e_s)) => {
-                        if s.as_severity() > e_s.as_severity() {
+        for (idx, pt_opt) in self.phenotypes.iter().enumerate() {
+            if let Some(pt) = pt_opt {
+                match temp.get(pt.term().id()) {
+                    None => {
+                        temp.insert(pt.term().id(), (idx, pt));
+                    }
+                    Some((_, existing_pt)) => match (pt.severity(), existing_pt.severity()) {
+                        (Some(s), Some(e_s)) => {
+                            if s.as_severity() > e_s.as_severity() {
+                                temp.insert(pt.term().id(), (idx, &pt));
+                            }
+                        }
+                        (Some(_), None) => {
                             temp.insert(pt.term().id(), (idx, &pt));
                         }
-                    }
-                    (Some(_), None) => {
-                        temp.insert(pt.term().id(), (idx, &pt));
-                    }
-                    _ => {}
-                },
+                        _ => {}
+                    },
+                }
             }
         }
         let mut output: Vec<(usize, Condition)> = temp
@@ -117,9 +119,6 @@ impl ToCsv for Vec<QuestionnaireResult> {
                 }
             }
 
-            if condition.excluded() {
-                println!("Should write excluded")
-            }
             writer.write_all(condition.excluded().to_string().as_bytes())?;
             writer.write_all(b",")?;
 
@@ -146,16 +145,18 @@ impl ToCsv for Vec<QuestionnaireResult> {
                     )?
                 }
             } else {
-                for (q_idx, pt) in result.phenotypes.iter().enumerate() {
-                    write_row(
-                        &result.proband_id,
-                        &result.id,
-                        &result.name,
-                        result.taken_at.as_ref(),
-                        q_idx,
-                        pt,
-                        writer,
-                    )?
+                for (q_idx, pt_opt) in result.phenotypes.iter().enumerate() {
+                    if let Some(pt) = pt_opt {
+                        write_row(
+                            &result.proband_id,
+                            &result.id,
+                            &result.name,
+                            result.taken_at.as_ref(),
+                            q_idx,
+                            pt,
+                            writer,
+                        )?
+                    }
                 }
             }
         }
@@ -194,7 +195,7 @@ impl fmt::Display for QuestionnaireResult {
             writeln!(f, "       None recorded.")?;
         } else {
             for phenotype in &self.phenotypes {
-                writeln!(f, "       •  {}", phenotype)?;
+                writeln!(f, "       •  {:?}", phenotype)?;
             }
         }
 
@@ -255,7 +256,7 @@ mod tests {
         );
 
         let mut phenotypes = Vec::new();
-        phenotypes.push(phenotype);
+        phenotypes.push(Some(phenotype));
 
         let results = vec![QuestionnaireResult::new(
             Some("result-4"),
@@ -302,8 +303,8 @@ mod tests {
         );
 
         let mut phenotypes = Vec::new();
-        phenotypes.push(phenotype_mild);
-        phenotypes.push(phenotype_severe);
+        phenotypes.push(Some(phenotype_mild));
+        phenotypes.push(Some(phenotype_severe));
 
         let results = vec![QuestionnaireResult::new(
             Some("result-dedup"),
@@ -335,7 +336,7 @@ mod tests {
             None,
         );
         let mut phenotypes = Vec::new();
-        phenotypes.push(phenotype);
+        phenotypes.push(Some(phenotype));
 
         let results = vec![
             QuestionnaireResult::new(Some("result-5"), "pp1", "PHQ-9", None, Vec::new(), None),

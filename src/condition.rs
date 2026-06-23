@@ -22,6 +22,16 @@ impl Condition {
         }
     }
 
+    pub(crate) fn new_excluded(term: impl Into<Term>) -> Self {
+        Self {
+            term: term.into(),
+            severity: None,
+            excluded: true,
+            observed_start: None,
+            observed_end: None,
+        }
+    }
+
     #[allow(dead_code)]
     pub(crate) fn new(
         term: impl Into<Term>,

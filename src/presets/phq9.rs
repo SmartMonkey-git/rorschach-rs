@@ -2,7 +2,7 @@ use crate::condition::Condition;
 use crate::questionnaire::Questionnaire;
 use crate::questionnaire_item::QuestionnaireItem;
 use crate::score_calculations::sum_score::SumScore;
-use crate::term::{DiagnosisTerms, PhenotypeTerms, SeverityTerms};
+use crate::term::{PhenotypeTerms, SeverityTerms};
 use chrono::Duration;
 use maplit::btreemap;
 
@@ -10,7 +10,7 @@ pub(crate) fn phq9() -> Questionnaire {
     Questionnaire::new("PHQ-9", vec![
         QuestionnaireItem::new(
             Some("Little interest or pleasure in doing things".to_string()),
-            PhenotypeTerms::Anhedonia,4.0
+            PhenotypeTerms::Anhedonia, 4.0
         ),
         QuestionnaireItem::new(
             Some("Feeling down, depressed, or hopeless".to_string()),
@@ -45,13 +45,13 @@ pub(crate) fn phq9() -> Questionnaire {
             PhenotypeTerms::SuicidalIdeation, 4.0
         ),
     ], btreemap! {
-                    0 => None,
-                    2 => Some(Condition::without_time(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Borderline)),
-                    5 => Some(Condition::without_time(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Mild)),
-                    10 => Some(Condition::without_time(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Moderate)),
-                    15 => Some(Condition::without_time(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Severe)),
-                    20 => Some(Condition::without_time(DiagnosisTerms::DepressiveDisorder, SeverityTerms::Profound)),
+                    0 => Some(Condition::new_excluded(PhenotypeTerms::Depression)),
+                    2 => Some(Condition::without_time(PhenotypeTerms::Depression, SeverityTerms::Borderline)),
+                    5 => Some(Condition::without_time(PhenotypeTerms::Depression, SeverityTerms::Mild)),
+                    10 => Some(Condition::without_time(PhenotypeTerms::Depression, SeverityTerms::Moderate)),
+                    15 => Some(Condition::without_time(PhenotypeTerms::Depression, SeverityTerms::Severe)),
+                    20 => Some(Condition::without_time(PhenotypeTerms::Depression, SeverityTerms::Profound)),
             }, SumScore,
-                                                     Some(Duration::weeks(2))
+                       Some(Duration::weeks(2)),
     )
 }

@@ -4,7 +4,7 @@ use crate::traits::CalculateScore;
 pub struct SumScore;
 
 impl CalculateScore for SumScore {
-    fn calculate_score(&self, scores: &[f32]) -> f32 {
-        scores.iter().sum::<f32>()
+    fn calculate_score(&self, scores: &[Option<f32>]) -> f32 {
+        scores.iter().flatten().sum::<f32>()
     }
 }

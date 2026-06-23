@@ -7,6 +7,7 @@ use crate::term::{SeverityTerms, Term};
 use crate::traits::CalculateScore;
 use chrono::{DateTime, Duration, Utc};
 use std::collections::BTreeMap;
+use std::fmt::Debug;
 
 #[derive(Debug)]
 pub struct Questionnaire {
@@ -41,8 +42,8 @@ impl Questionnaire {
         let max_item_scores = self
             .items
             .iter()
-            .map(|question| question.n_answers())
-            .collect::<Vec<f32>>();
+            .map(|question| Some(question.n_answers() - 1.0))
+            .collect::<Vec<Option<f32>>>();
 
         self.score_calculator
             .calculate_score(max_item_scores.as_slice())
@@ -64,7 +65,7 @@ impl Questionnaire {
             });
         }
 
-        let item_scores: Vec<f32> = answers.iter().map(|a| a.score()).collect();
+        let item_scores: Vec<Option<f32>> = answers.iter().map(|a| a.score()).collect();
         let total_score = self.score_calculator.calculate_score(&item_scores);
 
         let max_score = self.max_score();
@@ -77,21 +78,28 @@ impl Questionnaire {
             });
         }
 
-        let mut phenotypes_set: Vec<Condition> = Vec::new();
+        let mut phenotypes_set: Vec<Option<Condition>> = Vec::new();
         for (answer, question) in answers.iter().zip(self.items.iter()) {
-            let mut phenotype: Condition = question.phenotype().clone();
-            self.set_time(&mut phenotype, taken_at);
+            match answer.score() {
+                None => {
+                    phenotypes_set.push(None);
+                }
+                Some(score) => {
+                    //TODO: It might not be true that the marking the first answer for a question means to exclude the phenotype.
+                    let mut phenotype: Condition = question.phenotype().clone();
+                    self.set_time(&mut phenotype, taken_at);
 
-            //TODO: It might not be true that the marking the first answer for a question means to exclude the phenotype.
-            if answer.score() >= 1.0 {
-                let severity = Self::calculate_severity(answer, question)?;
-                phenotype.set_severity(&severity);
-            } else {
-                phenotype.set_excluded(true);
+                    if score >= 1.0 {
+                        let severity = Self::calculate_severity(score, question)?;
+                        phenotype.set_severity(&severity);
+                    } else {
+                        phenotype.set_excluded(true);
+                    }
+                    phenotypes_set.push(Some(phenotype));
+                }
             }
-            phenotypes_set.push(phenotype);
         }
-
+        phenotypes_set.push(self.get_diagnosis(total_score, taken_at)?);
         let diagnosis = self.get_diagnosis(total_score, taken_at)?;
         let result = QuestionnaireResult::new(
             None::<String>,
@@ -106,12 +114,11 @@ impl Questionnaire {
     }
 
     fn calculate_severity(
-        answer: &Answer,
+        score: f32,
         question: &QuestionnaireItem,
     ) -> Result<Term, RorschachError> {
-        // TODO: this need to take into account answers that exclude the phenotype, instead of assigning a severity to it. Currently, this is solved with the -1.
-        let normalized_severity =
-            ((answer.score() / (question.n_answers() - 1.0)) * 10.0).trunc() / 10.0;
+        // TODO: this need to take into account answers that exclude the phenotype, instead of assigning a severity to it. Currently, this is solved by subtracting -1 form n_answers.
+        let normalized_severity = ((score / (question.n_answers() - 1.0)) * 10.0).trunc() / 10.0;
         let severity = SeverityTerms::from_numerical_severity(normalized_severity)?.as_term();
         Ok(severity)
     }
@@ -170,9 +177,9 @@ mod tests {
 
     #[test]
     fn test_calculate_severity() {
-        let answer = Answer::new(0, 4.0);
-        let q = QuestionnaireItem::new(None, PhenotypeTerms::AbnormalEatingBehavior, 5.0);
-        let severity = Questionnaire::calculate_severity(&answer, &q).unwrap();
+        let score = 3.0;
+        let q = QuestionnaireItem::new(None, PhenotypeTerms::AbnormalEatingBehavior, 4.0);
+        let severity = Questionnaire::calculate_severity(score, &q).unwrap();
 
         assert_eq!(severity, Term::from(SeverityTerms::Profound));
     }
