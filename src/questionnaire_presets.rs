@@ -12,9 +12,15 @@ pub enum QuestionnairePresets {
 impl QuestionnairePresets {
     pub fn build(&self) -> Questionnaire {
         match self {
-            QuestionnairePresets::PHQ9 => phq9(),
-            QuestionnairePresets::GAD7 => gad7(),
-            QuestionnairePresets::ASRM => asrm(),
+            QuestionnairePresets::PHQ9 => {
+                phq9().expect("Should always work, because its hard coded")
+            }
+            QuestionnairePresets::GAD7 => {
+                gad7().expect("Should always work, because its hard coded")
+            }
+            QuestionnairePresets::ASRM => {
+                asrm().expect("Should always work, because its hard coded")
+            }
         }
     }
 }
