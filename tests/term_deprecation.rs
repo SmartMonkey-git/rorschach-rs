@@ -36,16 +36,17 @@ pub fn term_deprecation() {
     for term in PhenotypeTerms::iter() {
         let t = term.as_term();
 
-        let term_id = TermId::from_str(t.id()).unwrap();
+        let term_id =
+            TermId::from_str(t.id()).unwrap_or_else(|| panic!("Failed to get term {}", t.id()));
 
         let term_state = ontology
             .term_by_id(&term_id)
-            .expect(&format!("Failed to get term {}", t.id()));
+            .unwrap_or_else(|| panic!("Failed to get term {}", t.id()));
 
         if term_state.is_obsolete() {
             obsolete_terms.push(t.label().to_string());
         }
-        if term_state.name().to_string() != t.label() {
+        if term_state.name() != t.label() {
             label_wrong.push(t.label().to_string());
         }
     }
