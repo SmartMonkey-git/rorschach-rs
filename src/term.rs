@@ -65,6 +65,8 @@ impl From<DiagnosisTerms> for Term {
         value.as_term()
     }
 }
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, EnumIter)]
+
 pub enum PhenotypeTerms {
     Anhedonia,
     Depression,
