@@ -26,8 +26,8 @@ impl ConditionBuilder {
         }
     }
 
-    pub fn severity(mut self, severity: Term) -> Self {
-        self.severity = Some(severity);
+    pub fn severity(mut self, severity: impl Into<Term>) -> Self {
+        self.severity = Some(severity.into());
         self
     }
 
@@ -100,7 +100,7 @@ impl ConditionBuilder {
     ) -> HashMap<i16, Condition> {
         let mut conditions: HashMap<i16, Condition> = entries
             .iter()
-            .map(|(idx, s)| (*idx, self.clone().severity(s.into()).build()))
+            .map(|(idx, s)| (*idx, self.clone().severity(s).build()))
             .collect();
 
         if excluded {

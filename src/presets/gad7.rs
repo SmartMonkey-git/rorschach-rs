@@ -10,13 +10,15 @@ use chrono::Duration;
 use maplit::btreemap;
 
 pub(crate) fn gad7() -> Result<Questionnaire, RorschachError> {
+    let name = "GAD-7";
+
     let severities = vec![
         (1, SeverityTerms::Borderline),
         (2, SeverityTerms::Moderate),
         (3, SeverityTerms::Profound),
     ];
 
-    let builder = QuestionnaireBuilder::new("GAD-7", Box::new(SumScore))
+    let builder = QuestionnaireBuilder::new(name, Box::new(SumScore))
         .recall_period(Duration::weeks(2))
         .interpretations(btreemap! {
             0  => Some(Condition::new_excluded(PhenotypeTerms::Anxiety)),
@@ -72,7 +74,7 @@ pub(crate) fn gad7() -> Result<Questionnaire, RorschachError> {
         ]);
 
     let builder = builder.map_err(|err| {
-        RorschachError::BuildingError(format!("Error when building GAD7: {}", err))
+        RorschachError::BuildingError(format!("Error when building {name}: {}", err))
     })?;
     Ok(builder.build())
 }

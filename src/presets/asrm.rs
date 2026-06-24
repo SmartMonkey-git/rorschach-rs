@@ -10,13 +10,14 @@ use chrono::Duration;
 use maplit::btreemap;
 
 pub(crate) fn asrm() -> Result<Questionnaire, RorschachError> {
+    let name = "ASRM";
     let severities = vec![
         (1, SeverityTerms::Borderline),
         (2, SeverityTerms::Moderate),
         (3, SeverityTerms::Moderate),
         (4, SeverityTerms::Profound),
     ];
-    let builder = QuestionnaireBuilder::new("ASRM", Box::new(SumScore))
+    let builder = QuestionnaireBuilder::new(name, Box::new(SumScore))
         .recall_period(Duration::weeks(2))
         .interpretations(btreemap! {
             0  => Some(Condition::new_excluded(PhenotypeTerms::Mania)),
@@ -51,7 +52,7 @@ pub(crate) fn asrm() -> Result<Questionnaire, RorschachError> {
         ]);
 
     let builder = builder.map_err(|err| {
-        RorschachError::BuildingError(format!("Error when building ASRM: {}", err))
+        RorschachError::BuildingError(format!("Error when building {name}: {}", err))
     })?;
     Ok(builder.build())
 }

@@ -99,6 +99,9 @@ pub enum PhenotypeTerms {
     AbnormallyRapidThoughtProcess,
     Delusion,
     SelfNeglect,
+    PoorAppetite,
+    Apathy,
+    Hopelessness,
 }
 
 impl AsTerm for PhenotypeTerms {
@@ -149,6 +152,9 @@ impl AsTerm for PhenotypeTerms {
             }
             PhenotypeTerms::Delusion => Term::new("HP:0000746", "Delusion"),
             PhenotypeTerms::SelfNeglect => Term::new("HP:0025479", "Self-neglect"),
+            PhenotypeTerms::PoorAppetite => Term::new("HP:0004396", "Poor appetite"),
+            PhenotypeTerms::Apathy => Term::new("HP:0000741", "Apathy"),
+            PhenotypeTerms::Hopelessness => Term::new("HP:5200271", "Hopelessness"),
         }
     }
 }

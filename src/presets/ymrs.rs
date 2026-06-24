@@ -10,6 +10,7 @@ use chrono::Duration;
 use maplit::btreemap;
 
 pub(crate) fn ymrs() -> Result<Questionnaire, RorschachError> {
+    let name = "YMRS";
     let linear_severities = vec![
         (1, SeverityTerms::Borderline),
         (2, SeverityTerms::Moderate),
@@ -24,7 +25,7 @@ pub(crate) fn ymrs() -> Result<Questionnaire, RorschachError> {
         (8, SeverityTerms::Profound),
     ];
 
-    let builder = QuestionnaireBuilder::new("YMRS", Box::new(SumScore))
+    let builder = QuestionnaireBuilder::new(name, Box::new(SumScore))
         .recall_period(Duration::weeks(2))
         .interpretations(btreemap! {
             0  => Some(Condition::new_excluded(PhenotypeTerms::Mania)),
@@ -98,7 +99,7 @@ pub(crate) fn ymrs() -> Result<Questionnaire, RorschachError> {
         ]);
 
     let builder = builder.map_err(|err| {
-        RorschachError::BuildingError(format!("Error when building YMRS: {}", err))
+        RorschachError::BuildingError(format!("Error when building {name}: {}", err))
     })?;
 
     Ok(builder.build())
