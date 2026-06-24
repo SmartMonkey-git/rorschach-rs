@@ -51,7 +51,7 @@ pub(crate) fn asrm() -> Result<Questionnaire, RorschachError> {
         ]);
 
     let builder = builder.map_err(|err| {
-        RorschachError::BuildingError(format!("Error when building ASRM: {}", err.to_string()))
+        RorschachError::BuildingError(format!("Error when building ASRM: {}", err))
     })?;
     Ok(builder.build())
 }

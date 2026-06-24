@@ -72,7 +72,7 @@ pub(crate) fn gad7() -> Result<Questionnaire, RorschachError> {
         ]);
 
     let builder = builder.map_err(|err| {
-        RorschachError::BuildingError(format!("Error when building GAD7: {}", err.to_string()))
+        RorschachError::BuildingError(format!("Error when building GAD7: {}", err))
     })?;
     Ok(builder.build())
 }

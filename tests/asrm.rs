@@ -20,7 +20,7 @@ fn test_asrm() {
 
     let res = asrm.evaluate("some_id", answers.as_ref(), None).unwrap();
 
-    let expected_terms = vec![
+    let expected_terms = [
         (PhenotypeTerms::Euphoria.as_term(), None),
         (
             PhenotypeTerms::Grandiosity.as_term(),

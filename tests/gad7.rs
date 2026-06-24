@@ -22,7 +22,7 @@ fn test_gad7() {
 
     let res = gad7.evaluate("some_id", answers.as_ref(), None).unwrap();
 
-    let expected_terms = vec![
+    let expected_terms = [
         (PhenotypeTerms::Anxiety.as_term(), None),
         (
             PhenotypeTerms::Anxiety.as_term(),

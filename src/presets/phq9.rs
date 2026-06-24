@@ -93,7 +93,7 @@ pub(crate) fn phq9() -> Result<Questionnaire, RorschachError> {
         ]);
 
     let builder = builder.map_err(|err| {
-        RorschachError::BuildingError(format!("Error when building PHQ-9: {}", err.to_string()))
+        RorschachError::BuildingError(format!("Error when building PHQ-9: {}", err))
     })?;
 
     Ok(builder.build())
