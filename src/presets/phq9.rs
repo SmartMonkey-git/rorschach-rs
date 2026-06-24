@@ -10,13 +10,14 @@ use chrono::Duration;
 use maplit::btreemap;
 
 pub(crate) fn phq9() -> Result<Questionnaire, RorschachError> {
+    let name = "PHQ-9";
     let severities = vec![
         (1, SeverityTerms::Borderline),
         (2, SeverityTerms::Moderate),
         (3, SeverityTerms::Profound),
     ];
 
-    let builder = QuestionnaireBuilder::new("PHQ-9", Box::new(SumScore))
+    let builder = QuestionnaireBuilder::new(name, Box::new(SumScore))
         .recall_period(Duration::weeks(2))
         .interpretations(btreemap! {
             0  => Some(Condition::new_excluded(PhenotypeTerms::Depression)),
@@ -93,7 +94,7 @@ pub(crate) fn phq9() -> Result<Questionnaire, RorschachError> {
         ]);
 
     let builder = builder.map_err(|err| {
-        RorschachError::BuildingError(format!("Error when building PHQ-9: {}", err))
+        RorschachError::BuildingError(format!("Error when building {name}: {}", err))
     })?;
 
     Ok(builder.build())
