@@ -106,8 +106,8 @@ impl Questionnaire {
             }
         }
 
-        let diagnosis = self.get_diagnosis(total_score, taken_at)?;
-        conditions.push(diagnosis);
+        //let diagnosis = self.get_diagnosis(total_score, taken_at)?;
+        //conditions.push(diagnosis);
         let diagnosis = self.get_diagnosis(total_score, taken_at)?;
         let result = QuestionnaireResult::new(
             None::<String>,

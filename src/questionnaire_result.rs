@@ -38,6 +38,17 @@ impl QuestionnaireResult {
         }
     }
 
+    pub fn id(&self) -> &str {
+        &self.id
+    }
+    pub fn proband_id(&self) -> &str {
+        &self.proband_id
+    }
+
+    pub fn phenotypes(&self) -> &[Option<Condition>] {
+        &self.phenotypes
+    }
+
     pub fn get_unique_phenotypes(&self) -> Vec<(usize, Condition)> {
         let mut temp = HashMap::new();
         for (idx, pt_opt) in self.phenotypes.iter().enumerate() {
@@ -207,6 +218,7 @@ mod tests {
     use super::*;
     use crate::condition::Condition;
     use crate::term::{PhenotypeTerms, SeverityTerms};
+    use crate::traits::AsTerm;
     use chrono::TimeZone;
 
     fn to_csv_string(results: &Vec<QuestionnaireResult>) -> String {

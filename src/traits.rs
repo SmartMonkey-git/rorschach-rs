@@ -1,4 +1,5 @@
 use crate::error::ToCsvError;
+use crate::term::Term;
 use std::fmt::Debug;
 use std::io::Write;
 
@@ -8,4 +9,8 @@ pub trait CalculateScore: Debug {
 
 pub trait ToCsv {
     fn to_csv<W: Write>(&self, writer: &mut W, filter_duplicates: bool) -> Result<(), ToCsvError>;
+}
+
+pub trait AsTerm {
+    fn as_term(&self) -> Term;
 }

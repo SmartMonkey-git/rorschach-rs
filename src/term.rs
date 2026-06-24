@@ -1,5 +1,6 @@
 use crate::condition::Condition;
 use crate::error::RorschachError;
+use crate::traits::AsTerm;
 use std::fmt;
 use strum::{EnumCount, EnumIter, IntoEnumIterator};
 
@@ -98,8 +99,8 @@ pub enum PhenotypeTerms {
     SelfNeglect,
 }
 
-impl PhenotypeTerms {
-    pub fn as_term(&self) -> Term {
+impl AsTerm for PhenotypeTerms {
+    fn as_term(&self) -> Term {
         match self {
             PhenotypeTerms::Anhedonia => Term::new("HP:0012154", "Anhedonia"),
             PhenotypeTerms::Depression => Term::new("HP:0000716", "Depression"),
@@ -171,9 +172,8 @@ pub enum SeverityTerms {
     Severe,
     Profound,
 }
-
-impl SeverityTerms {
-    pub fn as_term(&self) -> Term {
+impl AsTerm for SeverityTerms {
+    fn as_term(&self) -> Term {
         match self {
             SeverityTerms::Borderline => Term::new("HP:0012827", "Borderline"),
             SeverityTerms::Mild => Term::new("HP:0012825", "Mild"),
@@ -182,7 +182,8 @@ impl SeverityTerms {
             SeverityTerms::Profound => Term::new("HP:0012829", "Profound"),
         }
     }
-
+}
+impl SeverityTerms {
     pub fn from_category(severity: i16) -> Result<SeverityTerms, RorschachError> {
         for (idx, s) in SeverityTerms::iter().enumerate() {
             if idx == severity as usize {

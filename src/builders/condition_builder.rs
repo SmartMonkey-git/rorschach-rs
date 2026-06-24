@@ -1,6 +1,7 @@
 use crate::condition::Condition;
 use crate::error::RorschachError;
 use crate::term::{SeverityTerms, Term};
+use crate::traits::AsTerm;
 use chrono::{DateTime, Utc};
 use std::collections::HashMap;
 use strum::EnumCount;
