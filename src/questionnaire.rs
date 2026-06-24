@@ -96,8 +96,7 @@ impl Questionnaire {
                     conditions.push(None);
                 }
                 Some(score) => {
-                    //TODO: It might not be true that the marking the first answer for a question means to exclude the phenotype.
-                    let mut eval_result = question.evaluate(answer.idx(), score as i16)?.clone();
+                    let mut eval_result = question.evaluate(score as i16)?.clone();
 
                     self.set_time(&mut eval_result, taken_at);
 

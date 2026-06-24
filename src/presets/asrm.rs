@@ -29,27 +29,22 @@ pub(crate) fn asrm() -> Result<Questionnaire, RorschachError> {
         })
         .items([
             QuestionnaireItemBuilder::new(5).conditions(
-                0,
                 ConditionBuilder::new(PhenotypeTerms::Euphoria)
                     .build_with_severities(severities.as_slice(), true),
             ),
             QuestionnaireItemBuilder::new(5).conditions(
-                1,
                 ConditionBuilder::new(PhenotypeTerms::Grandiosity)
                     .build_with_severities(severities.as_slice(), true),
             ),
             QuestionnaireItemBuilder::new(5).conditions(
-                2,
                 ConditionBuilder::new(PhenotypeTerms::DecreasedNeedForSleep)
                     .build_with_severities(severities.as_slice(), true),
             ),
             QuestionnaireItemBuilder::new(5).conditions(
-                3,
                 ConditionBuilder::new(PhenotypeTerms::PressuredSpeech)
                     .build_with_severities(severities.as_slice(), true),
             ),
             QuestionnaireItemBuilder::new(5).conditions(
-                4,
                 ConditionBuilder::new(PhenotypeTerms::Agitation)
                     .build_with_severities(severities.as_slice(), true),
             ),

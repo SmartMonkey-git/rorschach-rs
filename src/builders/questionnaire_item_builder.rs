@@ -4,8 +4,8 @@ use std::collections::HashMap;
 
 pub struct QuestionnaireItemBuilder {
     stem: Option<String>,
-    // Question index, and then answers by score
-    conditions: HashMap<usize, HashMap<i16, Condition>>,
+    //  Score and Condition
+    conditions: HashMap<i16, Condition>,
     n_answers: i16,
 }
 
@@ -23,17 +23,14 @@ impl QuestionnaireItemBuilder {
         self
     }
 
-    pub fn condition(mut self, key: usize, score: i16, condition: impl Into<Condition>) -> Self {
-        self.conditions
-            .entry(key)
-            .or_default()
-            .insert(score, condition.into());
+    pub fn condition(mut self, score: i16, condition: impl Into<Condition>) -> Self {
+        self.conditions.insert(score, condition.into());
 
         self
     }
 
-    pub fn conditions(mut self, key: usize, conditions: HashMap<i16, Condition>) -> Self {
-        self.conditions.entry(key).insert_entry(conditions);
+    pub fn conditions(mut self, conditions: HashMap<i16, Condition>) -> Self {
+        self.conditions = conditions;
         self
     }
 

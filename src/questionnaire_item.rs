@@ -5,14 +5,15 @@ use std::collections::HashMap;
 #[derive(Debug, Clone, PartialEq)]
 pub struct QuestionnaireItem {
     stem: Option<String>,
-    conditions: HashMap<usize, HashMap<i16, Condition>>,
+    /// Score to condition
+    conditions: HashMap<i16, Condition>,
     n_answers: i16,
 }
 
 impl QuestionnaireItem {
     pub fn new(
         stem: Option<String>,
-        conditions: HashMap<usize, HashMap<i16, Condition>>,
+        conditions: HashMap<i16, Condition>,
         n_answers: i16,
     ) -> QuestionnaireItem {
         Self {
@@ -22,24 +23,12 @@ impl QuestionnaireItem {
         }
     }
 
-    pub fn conditions(&self, question_index: usize) -> Option<&HashMap<i16, Condition>> {
-        self.conditions.get(&question_index)
+    pub fn conditions(&self) -> &HashMap<i16, Condition> {
+        &self.conditions
     }
-    pub fn evaluate(
-        &self,
-        question_index: usize,
-        score: i16,
-    ) -> Result<&Condition, RorschachError> {
-        let answers = self.conditions.get(&question_index).ok_or(
-            RorschachError::IndexNonExistingQuestion(
-                question_index,
-                self.stem.clone().unwrap_or("NO-STEM".to_string()),
-                self.n_answers as usize,
-            ),
-        )?;
-
+    pub fn evaluate(&self, score: i16) -> Result<&Condition, RorschachError> {
         let condition =
-            answers
+            self.conditions
                 .get(&score)
                 .ok_or(RorschachError::IndexNonExsistingQuestionScore(
                     score,

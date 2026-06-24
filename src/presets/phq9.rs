@@ -30,63 +30,63 @@ pub(crate) fn phq9() -> Result<Questionnaire, RorschachError> {
             QuestionnaireItemBuilder::new(4)
                 .stem("Little interest or pleasure in doing things")
                 .conditions(
-                    0,
+
                     ConditionBuilder::new(PhenotypeTerms::Anhedonia)
                         .build_with_severities(severities.as_slice(), true),
                 ),
             QuestionnaireItemBuilder::new(4)
                 .stem("Feeling down, depressed, or hopeless")
                 .conditions(
-                    1,
+
                     ConditionBuilder::new(PhenotypeTerms::PathologicalSadness)
                         .build_with_severities(severities.as_slice(), true),
                 ),
             QuestionnaireItemBuilder::new(4)
                 .stem("Trouble falling or staying asleep, or sleeping too much")
                 .conditions(
-                    2,
+
                     ConditionBuilder::new(PhenotypeTerms::SleepDisturbance)
                         .build_with_severities(severities.as_slice(), true),
                 ),
             QuestionnaireItemBuilder::new(4)
                 .stem("Feeling tired or having little energy")
                 .conditions(
-                    3,
+
                     ConditionBuilder::new(PhenotypeTerms::Fatigue)
                         .build_with_severities(severities.as_slice(), true),
                 ),
             QuestionnaireItemBuilder::new(4)
                 .stem("Poor appetite or overeating")
                 .conditions(
-                    4,
+
                     ConditionBuilder::new(PhenotypeTerms::AbnormalEatingBehavior)
                         .build_with_severities(severities.as_slice(), true),
                 ),
             QuestionnaireItemBuilder::new(4)
                 .stem("Feeling bad about yourself — or that you are a failure or have let yourself or your family down")
                 .conditions(
-                    5,
+
                     ConditionBuilder::new(PhenotypeTerms::Guilt)
                         .build_with_severities(severities.as_slice(), true),
                 ),
             QuestionnaireItemBuilder::new(4)
                 .stem("Trouble concentrating on things, such as reading the newspaper or watching television")
                 .conditions(
-                    6,
+
                     ConditionBuilder::new(PhenotypeTerms::DiminishedAbilityToConcentrate)
                         .build_with_severities(severities.as_slice(), true),
                 ),
             QuestionnaireItemBuilder::new(4)
                 .stem("Moving or speaking so slowly that other people could have noticed? Or the opposite — being so fidgety or restless that you have been moving around a lot more than usual")
                 .conditions(
-                    7,
+
                     ConditionBuilder::new(PhenotypeTerms::PsychomotorDeterioration)
                         .build_with_severities(severities.as_slice(), true),
                 ),
             QuestionnaireItemBuilder::new(4)
                 .stem("Thoughts that you would be better off dead or of hurting yourself in some way")
                 .conditions(
-                    8,
+
                     ConditionBuilder::new(PhenotypeTerms::SuicidalIdeation)
                         .build_with_severities(severities.as_slice(), true),
                 ),
