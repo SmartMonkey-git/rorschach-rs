@@ -1,5 +1,6 @@
 use crate::condition::Condition;
 use crate::error::RorschachError;
+use crate::traits::AsTerm;
 use std::fmt;
 use strum::{EnumCount, EnumIter, IntoEnumIterator};
 
@@ -87,10 +88,19 @@ pub enum PhenotypeTerms {
     PressuredSpeech,
     PathologicalSadness,
     Mania,
+    AmplificationOfSexualBehavior,
+    AggressiveBehavior,
+    LackOfInsight,
+    Psychosis,
+    FlightOfIdeas,
+    DisorderOfThoughtContent,
+    AbnormallyRapidThoughtProcess,
+    Delusion,
+    SelfNeglect,
 }
 
-impl PhenotypeTerms {
-    pub fn as_term(&self) -> Term {
+impl AsTerm for PhenotypeTerms {
+    fn as_term(&self) -> Term {
         match self {
             PhenotypeTerms::Anhedonia => Term::new("HP:0012154", "Anhedonia"),
             PhenotypeTerms::Depression => Term::new("HP:0000716", "Depression"),
@@ -104,11 +114,7 @@ impl PhenotypeTerms {
             PhenotypeTerms::PsychomotorDeterioration => {
                 Term::new("HP:0002361", "Psychomotor deterioration")
             }
-            PhenotypeTerms::SuicidalIdeation => Term::new(
-                "HP:0031589",
-                "Suicidal ideation
-",
-            ),
+            PhenotypeTerms::SuicidalIdeation => Term::new("HP:0031589", "Suicidal ideation"),
             PhenotypeTerms::DiminishedAbilityToConcentrate => {
                 Term::new("HP:0031987", "Diminished ability to concentrate")
             }
@@ -126,6 +132,21 @@ impl PhenotypeTerms {
             PhenotypeTerms::PressuredSpeech => Term::new("HP:5200265", "Pressured speech"),
             PhenotypeTerms::PathologicalSadness => Term::new("HP:5200273", "Pathological sadness"),
             PhenotypeTerms::Mania => Term::new("HP:0100754", "Mania"),
+            PhenotypeTerms::AmplificationOfSexualBehavior => {
+                Term::new("HP:5200321", "Amplification of sexual behavior")
+            }
+            PhenotypeTerms::AggressiveBehavior => Term::new("HP:0000718", "Aggressive behavior"),
+            PhenotypeTerms::LackOfInsight => Term::new("HP:0000757", "Lack of insight"),
+            PhenotypeTerms::Psychosis => Term::new("HP:0000709", "Psychosis"),
+            PhenotypeTerms::FlightOfIdeas => Term::new("HP:5200234", "Flight of ideas"),
+            PhenotypeTerms::DisorderOfThoughtContent => {
+                Term::new("HP:0025779", "Disorder of thought content")
+            }
+            PhenotypeTerms::AbnormallyRapidThoughtProcess => {
+                Term::new("HP:0025781", "Abnormally rapid thought process")
+            }
+            PhenotypeTerms::Delusion => Term::new("HP:0000746", "Delusion"),
+            PhenotypeTerms::SelfNeglect => Term::new("HP:0025479", "Self-neglect"),
         }
     }
 }
@@ -151,31 +172,26 @@ pub enum SeverityTerms {
     Severe,
     Profound,
 }
-
-impl SeverityTerms {
-    pub fn as_term(&self) -> Term {
+impl AsTerm for SeverityTerms {
+    fn as_term(&self) -> Term {
         match self {
             SeverityTerms::Borderline => Term::new("HP:0012827", "Borderline"),
             SeverityTerms::Mild => Term::new("HP:0012825", "Mild"),
             SeverityTerms::Moderate => Term::new("HP:0012826", "Moderate"),
-            SeverityTerms::Profound => Term::new("HP:0012829", "Profound"),
             SeverityTerms::Severe => Term::new("HP:0012828", "Severe"),
+            SeverityTerms::Profound => Term::new("HP:0012829", "Profound"),
         }
     }
-
-    pub fn from_numerical_severity(severity: f32) -> Result<SeverityTerms, RorschachError> {
-        let last_max = 0.0;
-
-        if (0.0..=1.0).contains(&severity) {
-            for (idx, severity_enum) in SeverityTerms::iter().enumerate() {
-                let max = (idx + 1) as f32 / SeverityTerms::COUNT as f32;
-
-                if (last_max..=max).contains(&severity) {
-                    return Ok(severity_enum);
-                }
+}
+impl SeverityTerms {
+    pub fn from_category(severity: i16) -> Result<SeverityTerms, RorschachError> {
+        for (idx, s) in SeverityTerms::iter().enumerate() {
+            if idx == severity as usize {
+                return Ok(s);
             }
         }
-        Err(RorschachError::CantMapSeverity(severity))
+
+        Err(RorschachError::CantMapSeverity(severity as f32))
     }
 }
 
@@ -185,47 +201,8 @@ impl From<SeverityTerms> for Term {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_boundaries_map_correctly() {
-        let count = SeverityTerms::COUNT as f32;
-        for (idx, expected) in SeverityTerms::iter().enumerate() {
-            let max = (idx + 1) as f32 / count;
-            let mid = (idx as f32 / count + max) / 2.0;
-
-            assert_eq!(
-                SeverityTerms::from_numerical_severity(mid).unwrap(),
-                expected
-            );
-            assert_eq!(
-                SeverityTerms::from_numerical_severity(max).unwrap(),
-                expected
-            );
-        }
-    }
-
-    #[test]
-    fn test_out_of_range_returns_error() {
-        assert!(SeverityTerms::from_numerical_severity(-0.1).is_err());
-        assert!(SeverityTerms::from_numerical_severity(1.1).is_err());
-    }
-
-    #[test]
-    fn test_zero_maps_to_first_variant() {
-        assert_eq!(
-            SeverityTerms::from_numerical_severity(0.0).unwrap(),
-            SeverityTerms::Borderline
-        );
-    }
-
-    #[test]
-    fn test_one_maps_to_last_variant() {
-        assert_eq!(
-            SeverityTerms::from_numerical_severity(1.0).unwrap(),
-            SeverityTerms::Profound
-        );
+impl From<&SeverityTerms> for Term {
+    fn from(value: &SeverityTerms) -> Self {
+        value.as_term()
     }
 }

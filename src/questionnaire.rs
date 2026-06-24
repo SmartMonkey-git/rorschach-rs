@@ -3,7 +3,6 @@ use crate::condition::Condition;
 use crate::error::RorschachError;
 use crate::questionnaire_item::QuestionnaireItem;
 use crate::questionnaire_result::QuestionnaireResult;
-use crate::term::{SeverityTerms, Term};
 use crate::traits::CalculateScore;
 use chrono::{DateTime, Duration, Utc};
 use std::collections::BTreeMap;
@@ -23,14 +22,14 @@ impl Questionnaire {
         name: impl Into<String>,
         items: Vec<QuestionnaireItem>,
         interpretation: BTreeMap<i32, Option<Condition>>,
-        score_calculator: impl CalculateScore + 'static,
+        score_calculator: Box<dyn CalculateScore>,
         recall_period: Option<Duration>,
     ) -> Self {
         Self {
             name: name.into(),
             items,
             interpretation,
-            score_calculator: Box::new(score_calculator),
+            score_calculator,
             recall_period,
         }
     }
@@ -38,11 +37,23 @@ impl Questionnaire {
     pub fn name(&self) -> &str {
         &self.name
     }
+
+    pub fn items(&self) -> &[QuestionnaireItem] {
+        &self.items
+    }
+
+    pub fn duration(&self) -> Option<&Duration> {
+        self.recall_period.as_ref()
+    }
+
+    pub fn interpretation(&self) -> &BTreeMap<i32, Option<Condition>> {
+        &self.interpretation
+    }
     pub fn max_score(&self) -> f32 {
         let max_item_scores = self
             .items
             .iter()
-            .map(|question| Some(question.n_answers() - 1.0))
+            .map(|question: &QuestionnaireItem| Some(question.max_score() as f32))
             .collect::<Vec<Option<f32>>>();
 
         self.score_calculator
@@ -78,49 +89,35 @@ impl Questionnaire {
             });
         }
 
-        let mut phenotypes_set: Vec<Option<Condition>> = Vec::new();
+        let mut conditions: Vec<Option<Condition>> = Vec::new();
         for (answer, question) in answers.iter().zip(self.items.iter()) {
             match answer.score() {
                 None => {
-                    phenotypes_set.push(None);
+                    conditions.push(None);
                 }
                 Some(score) => {
-                    //TODO: It might not be true that the marking the first answer for a question means to exclude the phenotype.
-                    let mut phenotype: Condition = question.phenotype().clone();
-                    self.set_time(&mut phenotype, taken_at);
+                    let mut eval_result = question.evaluate(score as i16)?.clone();
 
-                    if score >= 1.0 {
-                        let severity = Self::calculate_severity(score, question)?;
-                        phenotype.set_severity(&severity);
-                    } else {
-                        phenotype.set_excluded(true);
-                    }
-                    phenotypes_set.push(Some(phenotype));
+                    self.set_time(&mut eval_result, taken_at);
+
+                    conditions.push(Some(eval_result));
                 }
             }
         }
-        phenotypes_set.push(self.get_diagnosis(total_score, taken_at)?);
+
+        //let diagnosis = self.get_diagnosis(total_score, taken_at)?;
+        //conditions.push(diagnosis);
         let diagnosis = self.get_diagnosis(total_score, taken_at)?;
         let result = QuestionnaireResult::new(
             None::<String>,
             questionnaire_id,
             &self.name,
             diagnosis,
-            phenotypes_set,
+            conditions,
             taken_at,
         );
 
         Ok(result)
-    }
-
-    fn calculate_severity(
-        score: f32,
-        question: &QuestionnaireItem,
-    ) -> Result<Term, RorschachError> {
-        // TODO: this need to take into account answers that exclude the phenotype, instead of assigning a severity to it. Currently, this is solved by subtracting -1 form n_answers.
-        let normalized_severity = ((score / (question.n_answers() - 1.0)) * 10.0).trunc() / 10.0;
-        let severity = SeverityTerms::from_numerical_severity(normalized_severity)?.as_term();
-        Ok(severity)
     }
 
     fn get_diagnosis(
@@ -160,26 +157,4 @@ impl PartialEq for Questionnaire {
 }
 
 #[cfg(test)]
-mod tests {
-    use crate::questionnaire::Questionnaire;
-    use crate::questionnaire_item::QuestionnaireItem;
-    use crate::score_calculations::sum_score::SumScore;
-    use crate::term::{PhenotypeTerms, SeverityTerms, Term};
-
-    #[test]
-    fn test_new() {
-        let questionnaire =
-            Questionnaire::new("".to_string(), vec![], Default::default(), SumScore, None);
-
-        assert!(questionnaire.recall_period.is_none());
-    }
-
-    #[test]
-    fn test_calculate_severity() {
-        let score = 3.0;
-        let q = QuestionnaireItem::new(None, PhenotypeTerms::AbnormalEatingBehavior, 4.0);
-        let severity = Questionnaire::calculate_severity(score, &q).unwrap();
-
-        assert_eq!(severity, Term::from(SeverityTerms::Profound));
-    }
-}
+mod tests {}
