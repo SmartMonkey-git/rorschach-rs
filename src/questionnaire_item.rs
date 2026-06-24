@@ -33,7 +33,7 @@ impl QuestionnaireItem {
         let answers = self.conditions.get(&question_index).ok_or(
             RorschachError::IndexNonExistingQuestion(
                 question_index,
-                self.stem.clone().unwrap(), //TODO
+                self.stem.clone().unwrap_or("NO-STEM".to_string()),
                 self.n_answers as usize,
             ),
         )?;
@@ -43,7 +43,7 @@ impl QuestionnaireItem {
                 .get(&score)
                 .ok_or(RorschachError::IndexNonExsistingQuestionScore(
                     score,
-                    self.stem.clone().unwrap(), //TODO
+                    self.stem.clone().unwrap_or("NO-STEM".to_string()),
                 ))?;
         Ok(condition)
     }
