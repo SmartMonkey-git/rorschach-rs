@@ -37,7 +37,7 @@ pub fn term_deprecation() {
         let t = term.as_term();
 
         let term_id =
-            TermId::from_str(t.id()).unwrap_or_else(|| panic!("Failed to get term {}", t.id()));
+            TermId::from_str(t.id()).unwrap_or_else(|_| panic!("Failed to get term {}", t.id()));
 
         let term_state = ontology
             .term_by_id(&term_id)
