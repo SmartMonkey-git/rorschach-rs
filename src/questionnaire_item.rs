@@ -15,12 +15,17 @@ impl QuestionnaireItem {
         stem: Option<String>,
         conditions: HashMap<i16, Condition>,
         n_answers: i16,
-    ) -> QuestionnaireItem {
-        Self {
+    ) -> Result<QuestionnaireItem, RorschachError> {
+        if conditions.is_empty() {
+            return Err(RorschachError::BuildingError(
+                "Missing conditions".to_string(),
+            ));
+        }
+        Ok(Self {
             stem,
             conditions,
             n_answers,
-        }
+        })
     }
 
     pub fn conditions(&self) -> &HashMap<i16, Condition> {
@@ -39,5 +44,9 @@ impl QuestionnaireItem {
 
     pub fn n_answers(&self) -> i16 {
         self.n_answers
+    }
+
+    pub fn max_score(&self) -> i16 {
+        *self.conditions().keys().max().unwrap()
     }
 }

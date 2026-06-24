@@ -8,15 +8,14 @@ fn test_asrm() {
     let asrm = QuestionnairePresets::ASRM.build();
 
     assert_eq!(asrm.name(), "ASRM");
-    // 5 items, each with 5 options (0 to 4), max score is 20
     assert_eq!(asrm.max_score(), 5f32 * 4f32);
 
     let answers = vec![
-        Answer::new(0, Some(0.0)), // Excluded
-        Answer::new(1, Some(1.0)), // Borderline
-        Answer::new(2, Some(2.0)), // Moderate
-        Answer::new(3, Some(3.0)), // Moderate
-        Answer::new(4, Some(4.0)), // Profound
+        Answer::new(0, Some(0.0)),
+        Answer::new(1, Some(1.0)),
+        Answer::new(2, Some(2.0)),
+        Answer::new(3, Some(3.0)),
+        Answer::new(4, Some(4.0)),
     ];
 
     let res = asrm.evaluate("some_id", answers.as_ref(), None).unwrap();

@@ -1,4 +1,5 @@
 use crate::condition::Condition;
+use crate::error::RorschachError;
 use crate::questionnaire_item::QuestionnaireItem;
 use std::collections::HashMap;
 
@@ -34,7 +35,7 @@ impl QuestionnaireItemBuilder {
         self
     }
 
-    pub fn build(self) -> QuestionnaireItem {
+    pub fn build(self) -> Result<QuestionnaireItem, RorschachError> {
         QuestionnaireItem::new(self.stem, self.conditions, self.n_answers)
     }
 }

@@ -11,17 +11,17 @@ fn test_ymrs() {
     assert_eq!(ymrs.max_score(), (7f32 * 4f32) + (4f32 * 8f32));
 
     let answers = vec![
-        Answer::new(0, Some(0.0)),  // Linear: Excluded
-        Answer::new(1, Some(1.0)),  // Linear: Borderline
-        Answer::new(2, Some(2.0)),  // Linear: Moderate
-        Answer::new(3, Some(3.0)),  // Linear: Moderate
-        Answer::new(4, Some(8.0)),  // Amplified: Profound
-        Answer::new(5, Some(2.0)),  // Amplified: Borderline
-        Answer::new(6, Some(4.0)),  // Linear: Profound
-        Answer::new(7, Some(4.0)),  // Amplified: Moderate
-        Answer::new(8, Some(6.0)),  // Amplified: Moderate
-        Answer::new(9, Some(0.0)),  // Linear: Excluded
-        Answer::new(10, Some(1.0)), // Linear: Borderline
+        Answer::new(0, Some(0.0)),
+        Answer::new(1, Some(1.0)),
+        Answer::new(2, Some(2.0)),
+        Answer::new(3, Some(3.0)),
+        Answer::new(4, Some(8.0)),
+        Answer::new(5, Some(2.0)),
+        Answer::new(6, Some(4.0)),
+        Answer::new(7, Some(4.0)),
+        Answer::new(8, Some(6.0)),
+        Answer::new(9, Some(0.0)),
+        Answer::new(10, Some(1.0)),
     ];
 
     let res = ymrs.evaluate("some_id", answers.as_ref(), None).unwrap();

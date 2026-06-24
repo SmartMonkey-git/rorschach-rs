@@ -53,7 +53,7 @@ impl Questionnaire {
         let max_item_scores = self
             .items
             .iter()
-            .map(|question: &QuestionnaireItem| Some((question.n_answers() - 1) as f32))
+            .map(|question: &QuestionnaireItem| Some(question.max_score() as f32))
             .collect::<Vec<Option<f32>>>();
 
         self.score_calculator

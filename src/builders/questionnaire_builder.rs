@@ -1,5 +1,6 @@
 use crate::builders::questionnaire_item_builder::QuestionnaireItemBuilder;
 use crate::condition::Condition;
+use crate::error::RorschachError;
 use crate::questionnaire::Questionnaire;
 use crate::questionnaire_item::QuestionnaireItem;
 use crate::traits::CalculateScore;
@@ -30,9 +31,14 @@ impl QuestionnaireBuilder {
         self
     }
 
-    pub fn items(mut self, items: impl IntoIterator<Item = impl Into<QuestionnaireItem>>) -> Self {
-        self.items.extend(items.into_iter().map(Into::into));
-        self
+    pub fn items(
+        mut self,
+        items: impl IntoIterator<Item = impl TryInto<QuestionnaireItem, Error = RorschachError>>,
+    ) -> Result<Self, RorschachError> {
+        let qi: Result<Vec<QuestionnaireItem>, RorschachError> =
+            items.into_iter().map(TryInto::try_into).collect();
+        self.items.extend(qi?);
+        Ok(self)
     }
 
     pub fn interpretation(mut self, score: i32, condition: impl Into<Condition>) -> Self {
@@ -78,8 +84,10 @@ impl Questionnaire {
     }
 }
 
-impl From<QuestionnaireItemBuilder> for QuestionnaireItem {
-    fn from(builder: QuestionnaireItemBuilder) -> Self {
+impl TryFrom<QuestionnaireItemBuilder> for QuestionnaireItem {
+    type Error = RorschachError;
+
+    fn try_from(builder: QuestionnaireItemBuilder) -> Result<Self, Self::Error> {
         builder.build()
     }
 }
