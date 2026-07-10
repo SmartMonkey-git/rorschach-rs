@@ -1,5 +1,6 @@
 use crate::presets::asrm::asrm;
 use crate::presets::gad7::gad7;
+use crate::presets::hama::hama;
 use crate::presets::madrs::madrs;
 use crate::presets::phq9::phq9;
 use crate::presets::ymrs::ymrs;
@@ -11,6 +12,7 @@ pub enum QuestionnairePresets {
     ASRM,
     YMRS,
     MADRS,
+    HAMA,
 }
 
 impl QuestionnairePresets {
@@ -30,6 +32,9 @@ impl QuestionnairePresets {
             }
             QuestionnairePresets::MADRS => {
                 madrs().expect("Should always work, because its hard coded")
+            }
+            QuestionnairePresets::HAMA => {
+                hama().expect("Should always work, because its hard coded")
             }
         }
     }

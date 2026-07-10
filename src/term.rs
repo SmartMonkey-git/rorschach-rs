@@ -102,6 +102,15 @@ pub enum PhenotypeTerms {
     PoorAppetite,
     Apathy,
     Hopelessness,
+    Phobia,
+    Insomnia,
+    AbnormalityOfTheCardiovascularSystem,
+    AbnormalityOfTheRespiratorySystem,
+    AbnormalityOfTheGenitourinarySystem,
+    AbnormalityOfTheGastrointestinalTract,
+    CognitiveImpairment,
+    AbnormalAutonomicNervousSystemPhysiology,
+    AtypicalBehavior,
 }
 
 impl AsTerm for PhenotypeTerms {
@@ -155,6 +164,25 @@ impl AsTerm for PhenotypeTerms {
             PhenotypeTerms::PoorAppetite => Term::new("HP:0004396", "Poor appetite"),
             PhenotypeTerms::Apathy => Term::new("HP:0000741", "Apathy"),
             PhenotypeTerms::Hopelessness => Term::new("HP:5200271", "Hopelessness"),
+            PhenotypeTerms::Phobia => Term::new("HP:5200232", "Phobia"),
+            PhenotypeTerms::Insomnia => Term::new("HP:0100785", "Insomnia"),
+            PhenotypeTerms::AbnormalityOfTheCardiovascularSystem => {
+                Term::new("HP:0001626", "Abnormality of the cardiovascular system")
+            }
+            PhenotypeTerms::AbnormalityOfTheRespiratorySystem => {
+                Term::new("HP:0002086", "Abnormality of the respiratory system")
+            }
+            PhenotypeTerms::AbnormalityOfTheGastrointestinalTract => {
+                Term::new("HP:0011024", "Abnormality of the gastrointestinal tract")
+            }
+            PhenotypeTerms::AbnormalityOfTheGenitourinarySystem => {
+                Term::new("HP:0000119", "Abnormality of the genitourinary system")
+            }
+            PhenotypeTerms::CognitiveImpairment => Term::new("HP:5200044", "Cognitive impairment"),
+            PhenotypeTerms::AbnormalAutonomicNervousSystemPhysiology => {
+                Term::new("HP:0012332", "Abnormal autonomic nervous system physiology")
+            }
+            PhenotypeTerms::AtypicalBehavior => Term::new("HP:0000708", "Atypical behavior"),
         }
     }
 }

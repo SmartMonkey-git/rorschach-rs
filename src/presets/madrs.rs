@@ -23,14 +23,14 @@ pub(crate) fn madrs() -> Result<Questionnaire, RorschachError> {
     let builder = QuestionnaireBuilder::new(name, Box::new(SumScore))
         .recall_period(Duration::weeks(2))
         .interpretations(btreemap! {
-            0  => Some(Condition::new_excluded(PhenotypeTerms::Mania)),
-            5  => Some(Condition::new_excluded(PhenotypeTerms::Mania)),
-            8  => Some(Condition::without_time(PhenotypeTerms::Mania, SeverityTerms::Borderline)),
-            11 => Some(Condition::without_time(PhenotypeTerms::Mania, SeverityTerms::Mild)),
-            14 => Some(Condition::without_time(PhenotypeTerms::Mania, SeverityTerms::Moderate)),
-            17 => Some(Condition::without_time(PhenotypeTerms::Mania, SeverityTerms::Severe)),
-            20 => Some(Condition::without_time(PhenotypeTerms::Mania, SeverityTerms::Profound)),
-        })
+        0  => Some(Condition::new_excluded(PhenotypeTerms::Depression)),
+        5  => Some(Condition::new_excluded(PhenotypeTerms::Depression)),
+        8  => Some(Condition::without_time(PhenotypeTerms::Depression, SeverityTerms::Borderline)),
+        11 => Some(Condition::without_time(PhenotypeTerms::Depression, SeverityTerms::Mild)),
+        14 => Some(Condition::without_time(PhenotypeTerms::Depression, SeverityTerms::Moderate)),
+        17 => Some(Condition::without_time(PhenotypeTerms::Depression, SeverityTerms::Severe)),
+        20 => Some(Condition::without_time(PhenotypeTerms::Depression, SeverityTerms::Profound)),
+            })
         .items([
             QuestionnaireItemBuilder::new(7)
                 .conditions(
