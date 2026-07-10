@@ -66,7 +66,6 @@ impl From<DiagnosisTerms> for Term {
     }
 }
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, EnumIter)]
-
 pub enum PhenotypeTerms {
     Anhedonia,
     Depression,
@@ -178,7 +177,7 @@ impl AsTerm for PhenotypeTerms {
             PhenotypeTerms::AbnormalityOfTheGenitourinarySystem => {
                 Term::new("HP:0000119", "Abnormality of the genitourinary system")
             }
-            PhenotypeTerms::CognitiveImpairment => Term::new("HP:5200044", "Cognitive impairment"),
+            PhenotypeTerms::CognitiveImpairment => Term::new("HP:0100543", "Cognitive impairment"),
             PhenotypeTerms::AbnormalAutonomicNervousSystemPhysiology => {
                 Term::new("HP:0012332", "Abnormal autonomic nervous system physiology")
             }
@@ -201,7 +200,7 @@ impl From<PhenotypeTerms> for Condition {
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, EnumIter, EnumCount)]
 pub enum SeverityTerms {
-    // The severities need to be sorted descendingly for from_numerical_severity to work
+    // The severities need to be sorted descending for from_category to work
     Borderline,
     Mild,
     Moderate,
@@ -221,13 +220,11 @@ impl AsTerm for SeverityTerms {
 }
 impl SeverityTerms {
     pub fn from_category(severity: i16) -> Result<SeverityTerms, RorschachError> {
-        for (idx, s) in SeverityTerms::iter().enumerate() {
-            if idx == severity as usize {
-                return Ok(s);
-            }
+        if let Some(s) = SeverityTerms::iter().get(severity as usize) {
+            Ok(s)
+        } else {
+            Err(RorschachError::CantMapSeverity(severity as f32))
         }
-
-        Err(RorschachError::CantMapSeverity(severity as f32))
     }
 }
 

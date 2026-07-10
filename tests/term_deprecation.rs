@@ -53,8 +53,7 @@ pub fn term_deprecation() {
 
     if !obsolete_terms.is_empty() || !label_wrong.is_empty() {
         panic!(
-            "Got Obsolete terms: {:?} \n
-            Got wrong labels: {:?}",
+            "Got Obsolete terms: {:?}\nGot wrong labels: {:?}",
             obsolete_terms, label_wrong
         );
     }
