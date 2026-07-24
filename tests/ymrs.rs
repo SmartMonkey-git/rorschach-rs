@@ -1,8 +1,7 @@
-use robinson_group_rust_template::answer::Answer;
-use robinson_group_rust_template::questionnaire_presets::QuestionnairePresets;
-use robinson_group_rust_template::term::{PhenotypeTerms, SeverityTerms};
-use robinson_group_rust_template::traits::AsTerm;
-
+use rorschach_rs::answer::Answer;
+use rorschach_rs::questionnaire_presets::QuestionnairePresets;
+use rorschach_rs::term::{PhenotypeTerms, SeverityTerms};
+use rorschach_rs::traits::AsTerm;
 #[test]
 fn test_ymrs() {
     let ymrs = QuestionnairePresets::YMRS.build();
@@ -62,7 +61,7 @@ fn test_ymrs() {
         ),
         (PhenotypeTerms::SelfNeglect.as_term(), None),
         (
-            PhenotypeTerms::Delusion.as_term(),
+            PhenotypeTerms::LackOfInsight.as_term(),
             Some(SeverityTerms::Borderline.as_term()),
         ),
     ];

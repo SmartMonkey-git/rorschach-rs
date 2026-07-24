@@ -29,26 +29,36 @@ pub(crate) fn asrm() -> Result<Questionnaire, RorschachError> {
             20 => Some(Condition::without_time(PhenotypeTerms::Mania, SeverityTerms::Profound)),
         })
         .items([
-            QuestionnaireItemBuilder::new(5).conditions(
-                ConditionBuilder::new(PhenotypeTerms::Euphoria)
-                    .build_with_severities(severities.as_slice(), true),
-            ),
-            QuestionnaireItemBuilder::new(5).conditions(
-                ConditionBuilder::new(PhenotypeTerms::Grandiosity)
-                    .build_with_severities(severities.as_slice(), true),
-            ),
-            QuestionnaireItemBuilder::new(5).conditions(
-                ConditionBuilder::new(PhenotypeTerms::DecreasedNeedForSleep)
-                    .build_with_severities(severities.as_slice(), true),
-            ),
-            QuestionnaireItemBuilder::new(5).conditions(
-                ConditionBuilder::new(PhenotypeTerms::PressuredSpeech)
-                    .build_with_severities(severities.as_slice(), true),
-            ),
-            QuestionnaireItemBuilder::new(5).conditions(
-                ConditionBuilder::new(PhenotypeTerms::Agitation)
-                    .build_with_severities(severities.as_slice(), true),
-            ),
+            QuestionnaireItemBuilder::new(5)
+                .stem("Question 1")
+                .conditions(
+                    ConditionBuilder::new(PhenotypeTerms::Euphoria)
+                        .build_with_severities(severities.as_slice(), true),
+                ),
+            QuestionnaireItemBuilder::new(5)
+                .stem("Question 2")
+                .conditions(
+                    ConditionBuilder::new(PhenotypeTerms::Grandiosity)
+                        .build_with_severities(severities.as_slice(), true),
+                ),
+            QuestionnaireItemBuilder::new(5)
+                .stem("Question 3")
+                .conditions(
+                    ConditionBuilder::new(PhenotypeTerms::DecreasedNeedForSleep)
+                        .build_with_severities(severities.as_slice(), true),
+                ),
+            QuestionnaireItemBuilder::new(5)
+                .stem("Question 4")
+                .conditions(
+                    ConditionBuilder::new(PhenotypeTerms::PressuredSpeech)
+                        .build_with_severities(severities.as_slice(), true),
+                ),
+            QuestionnaireItemBuilder::new(5)
+                .stem("Question 5")
+                .conditions(
+                    ConditionBuilder::new(PhenotypeTerms::Agitation)
+                        .build_with_severities(severities.as_slice(), true),
+                ),
         ]);
 
     let builder = builder.map_err(|err| {

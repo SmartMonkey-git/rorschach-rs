@@ -7,8 +7,8 @@ use ontology_registry::{
     BioRegistryMetadataProvider, FileSystemOntologyRegistry, FileType, OboLibraryProvider,
     OntologyRegistration, RegistryKey, SupportedOntology, Version,
 };
-use robinson_group_rust_template::term::PhenotypeTerms;
-use robinson_group_rust_template::traits::AsTerm;
+use rorschach_rs::term::PhenotypeTerms;
+use rorschach_rs::traits::AsTerm;
 use std::path::PathBuf;
 use std::str::FromStr;
 use strum::IntoEnumIterator;

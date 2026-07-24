@@ -93,7 +93,7 @@ pub(crate) fn ymrs() -> Result<Questionnaire, RorschachError> {
                         .build_with_severities(linear_severities.as_slice(), true),
                 ),
             QuestionnaireItemBuilder::new(5).stem("Insight").conditions(
-                ConditionBuilder::new(PhenotypeTerms::Delusion)
+                ConditionBuilder::new(PhenotypeTerms::LackOfInsight)
                     .build_with_severities(linear_severities.as_slice(), true),
             ),
         ]);

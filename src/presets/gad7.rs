@@ -38,7 +38,7 @@ pub(crate) fn gad7() -> Result<Questionnaire, RorschachError> {
             QuestionnaireItemBuilder::new(4)
                 .stem("Not being able to stop or control worrying") // TODO: Needs to get its own phenotype, current one is wrong
                 .conditions(
-                    ConditionBuilder::new(PhenotypeTerms::Anxiety)
+                    ConditionBuilder::new(PhenotypeTerms::AnticipatoryAnxiety)
                         .build_with_severities(severities.as_slice(), true),
                 ),
             QuestionnaireItemBuilder::new(4)
@@ -68,7 +68,7 @@ pub(crate) fn gad7() -> Result<Questionnaire, RorschachError> {
             QuestionnaireItemBuilder::new(4)
                 .stem("Feeling afraid, as if something awful might happen")
                 .conditions(
-                    ConditionBuilder::new(PhenotypeTerms::AnticipatoryAnxiety)
+                    ConditionBuilder::new(PhenotypeTerms::SenseOfImpendingDoom)
                         .build_with_severities(severities.as_slice(), true),
                 ),
         ]);

@@ -78,6 +78,7 @@ pub enum PhenotypeTerms {
     SuicidalIdeation,
     DiminishedAbilityToConcentrate,
     Anxiety,
+    SenseOfImpendingDoom,
     Ruminations,
     Agitation,
     Restlessness,
@@ -182,6 +183,9 @@ impl AsTerm for PhenotypeTerms {
                 Term::new("HP:0012332", "Abnormal autonomic nervous system physiology")
             }
             PhenotypeTerms::AtypicalBehavior => Term::new("HP:0000708", "Atypical behavior"),
+            PhenotypeTerms::SenseOfImpendingDoom => {
+                Term::new("HP:0033845", "Sense of impending doom")
+            }
         }
     }
 }
