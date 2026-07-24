@@ -14,7 +14,9 @@ chrono = "0.4.41"
 strum = { version = "0.28", features = ["derive"] }
 uuid = { version = "1.23.1", features = ["v4"] }
 csv = "1.3"
+serde = { version = "1.0.228", features = ["derive"] }
 
 [dev-dependencies]
 ontology-registry = "0.4.2"
 ontolius = "0.7.4"
+serde = "1.0.229"

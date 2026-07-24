@@ -1,9 +1,10 @@
 use chrono::{DateTime, NaiveDate, TimeZone, Utc};
 use csv::Reader;
-use robinson_group_rust_template::answer::Answer;
-use robinson_group_rust_template::questionnaire_presets::QuestionnairePresets;
-use robinson_group_rust_template::questionnaire_result::QuestionnaireResult;
-use robinson_group_rust_template::traits::ToCsv;
+
+use rorschach_rs::answer::Answer;
+use rorschach_rs::questionnaire_presets::QuestionnairePresets;
+use rorschach_rs::questionnaire_result::QuestionnaireResult;
+use rorschach_rs::traits::ToCsv;
 use serde::Deserialize;
 use std::fs::File;
 use std::io::BufWriter;
@@ -56,7 +57,7 @@ fn to_date(string_date: &str) -> Option<DateTime<Utc>> {
 }
 
 #[test]
-#[ignore]
+
 fn test_decode() {
     let mut phq9_data =
         Reader::from_path("/Users/rouvenreuter/data/prechter/out/phq_item_level.csv").unwrap();
@@ -130,7 +131,7 @@ fn test_decode() {
     }
 
     let mut output =
-        File::create("/Users/rouvenreuter/data/prechter/rorschach_output.csv").unwrap();
+        File::create("/Users/rouvenreuter/data/prechter/rorschach_output_update.csv").unwrap();
 
     results
         .to_csv(&mut BufWriter::new(&mut output), true)

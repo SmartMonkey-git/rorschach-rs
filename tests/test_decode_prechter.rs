@@ -1,9 +1,10 @@
 use chrono::{DateTime, Days, NaiveDate, TimeZone, Utc};
 use csv::Reader;
-use robinson_group_rust_template::answer::Answer;
-use robinson_group_rust_template::questionnaire_presets::QuestionnairePresets;
-use robinson_group_rust_template::questionnaire_result::QuestionnaireResult;
-use robinson_group_rust_template::traits::ToCsv;
+
+use rorschach_rs::answer::Answer;
+use rorschach_rs::questionnaire_presets::QuestionnairePresets;
+use rorschach_rs::questionnaire_result::QuestionnaireResult;
+use rorschach_rs::traits::ToCsv;
 use serde::Deserialize;
 use std::fs::File;
 use std::io::BufWriter;
