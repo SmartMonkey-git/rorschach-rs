@@ -35,14 +35,14 @@ impl Condition {
     #[allow(dead_code)]
     pub(crate) fn new(
         term: impl Into<Term>,
-        severity: impl Into<Term>,
+        severity: Option<Term>,
         excluded: bool,
         observed_start: Option<DateTime<Utc>>,
         observed_end: Option<DateTime<Utc>>,
     ) -> Self {
         Self {
             term: term.into(),
-            severity: Some(severity.into()),
+            severity,
             excluded,
             observed_start,
             observed_end,

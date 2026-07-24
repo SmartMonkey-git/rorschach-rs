@@ -13,7 +13,7 @@ pub struct QuestionnaireResult {
     proband_id: String,
     name: String,
     diagnosis: Option<Condition>,
-    phenotypes: Vec<Option<Condition>>, // TODO: This should be Option<HashSet<Condition>>, because people can just not answer the question.
+    phenotypes: Vec<Option<Condition>>,
     taken_at: Option<DateTime<Utc>>,
 }
 
@@ -36,6 +36,17 @@ impl QuestionnaireResult {
             phenotypes,
             taken_at: taken_at.copied(),
         }
+    }
+
+    pub fn id(&self) -> &str {
+        &self.id
+    }
+    pub fn proband_id(&self) -> &str {
+        &self.proband_id
+    }
+
+    pub fn phenotypes(&self) -> &[Option<Condition>] {
+        &self.phenotypes
     }
 
     pub fn get_unique_phenotypes(&self) -> Vec<(usize, Condition)> {
@@ -207,6 +218,7 @@ mod tests {
     use super::*;
     use crate::condition::Condition;
     use crate::term::{PhenotypeTerms, SeverityTerms};
+    use crate::traits::AsTerm;
     use chrono::TimeZone;
 
     fn to_csv_string(results: &Vec<QuestionnaireResult>) -> String {
@@ -248,14 +260,14 @@ mod tests {
     fn test_to_csv_deduplicates_phenotypes_keeping_highest_severity() {
         let phenotype_mild = Condition::new(
             PhenotypeTerms::Guilt,
-            SeverityTerms::Mild,
+            Some(SeverityTerms::Mild.into()),
             false,
             Some(Utc.with_ymd_and_hms(2023, 3, 15, 0, 0, 0).unwrap()),
             None,
         );
         let phenotype_severe = Condition::new(
             PhenotypeTerms::Guilt,
-            SeverityTerms::Severe,
+            Some(SeverityTerms::Severe.into()),
             false,
             Some(Utc.with_ymd_and_hms(2023, 3, 15, 0, 0, 0).unwrap()),
             Some(Utc.with_ymd_and_hms(2023, 6, 1, 0, 0, 0).unwrap()),
@@ -284,7 +296,7 @@ mod tests {
     fn test_to_csv_multiple_results_same_column_width() {
         let low_self_esteem = Condition::new(
             PhenotypeTerms::LowSelfEsteem,
-            SeverityTerms::Mild,
+            Some(SeverityTerms::Mild.into()),
             false,
             None,
             None,
@@ -292,7 +304,7 @@ mod tests {
 
         let guilt = Condition::new(
             PhenotypeTerms::Guilt,
-            SeverityTerms::Mild,
+            Some(SeverityTerms::Mild.into()),
             false,
             None,
             None,
