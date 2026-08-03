@@ -80,7 +80,6 @@ pub(crate) fn phq9() -> Result<Questionnaire, RorschachError> {
             QuestionnaireItemBuilder::new(4)
                 .stem("Thoughts that you would be better off dead or of hurting yourself in some way")
                 .conditions(
-
                     ConditionBuilder::new(PhenotypeTerms::SuicidalIdeation)
                         .build_with_severities(severities.as_slice(), true),
                 ),
