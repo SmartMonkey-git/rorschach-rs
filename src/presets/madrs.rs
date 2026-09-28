@@ -32,61 +32,61 @@ pub(crate) fn madrs() -> Result<Questionnaire, RorschachError> {
         20 => Some(Condition::without_time(PhenotypeTerms::Depression, SeverityTerms::Profound)),
             })
         .items([
-            QuestionnaireItemBuilder::new(7)
+            QuestionnaireItemBuilder::new(7, 7)
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::PathologicalSadness)
                         .build_with_severities(severities.as_slice(), true),
                 )
                 .stem("Apparent Sadness"),
-            QuestionnaireItemBuilder::new(7)
+            QuestionnaireItemBuilder::new(7, 7)
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::PathologicalSadness)
                         .build_with_severities(severities.as_slice(), true),
                 )
                 .stem("Reported sadness"),
-            QuestionnaireItemBuilder::new(7)
+            QuestionnaireItemBuilder::new(7, 7)
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::Anxiety)
                         .build_with_severities(severities.as_slice(), true),
                 )
                 .stem("Inner tension"),
-            QuestionnaireItemBuilder::new(7)
+            QuestionnaireItemBuilder::new(7, 7)
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::DecreasedNeedForSleep)
                         .build_with_severities(severities.as_slice(), true),
                 )
                 .stem("Reduced sleep"),
-            QuestionnaireItemBuilder::new(7)
+            QuestionnaireItemBuilder::new(7, 7)
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::PoorAppetite)
                         .build_with_severities(severities.as_slice(), true),
                 )
                 .stem("Reduced appetite"),
-            QuestionnaireItemBuilder::new(7)
+            QuestionnaireItemBuilder::new(7, 7)
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::DiminishedAbilityToConcentrate)
                         .build_with_severities(severities.as_slice(), true),
                 )
                 .stem("Concentration Difficulties"),
-            QuestionnaireItemBuilder::new(7)
+            QuestionnaireItemBuilder::new(7, 7)
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::Fatigue)
                         .build_with_severities(severities.as_slice(), true),
                 )
                 .stem("Lassitude"),
-            QuestionnaireItemBuilder::new(7)
+            QuestionnaireItemBuilder::new(7, 7)
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::Apathy)
                         .build_with_severities(severities.as_slice(), true),
                 )
                 .stem("Inability to feel"),
-            QuestionnaireItemBuilder::new(7)
+            QuestionnaireItemBuilder::new(7, 7)
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::Hopelessness)
                         .build_with_severities(severities.as_slice(), true),
                 )
                 .stem("Pessimistic thoughts"),
-            QuestionnaireItemBuilder::new(7)
+            QuestionnaireItemBuilder::new(7, 7)
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::SuicidalIdeation)
                         .build_with_severities(severities.as_slice(), true),

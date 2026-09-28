@@ -6,20 +6,21 @@ use std::collections::HashMap;
 pub struct QuestionnaireItem {
     stem: Option<String>,
     /// Score to condition
-    conditions: HashMap<i16, Condition>,
+    conditions: HashMap<i16, Option<Condition>>,
     n_answers: i16,
 }
 
 impl QuestionnaireItem {
     pub fn new(
         stem: Option<String>,
-        conditions: HashMap<i16, Condition>,
+        conditions: HashMap<i16, Option<Condition>>,
         n_answers: i16,
     ) -> Result<QuestionnaireItem, RorschachError> {
         if conditions.is_empty() {
-            return Err(RorschachError::BuildingError(
-                "Missing conditions".to_string(),
-            ));
+            return Err(RorschachError::BuildingError(format!(
+                "Missing conditions for '{:?}'",
+                stem
+            )));
         }
         Ok(Self {
             stem,
@@ -28,10 +29,10 @@ impl QuestionnaireItem {
         })
     }
 
-    pub fn conditions(&self) -> &HashMap<i16, Condition> {
+    pub fn conditions(&self) -> &HashMap<i16, Option<Condition>> {
         &self.conditions
     }
-    pub fn evaluate(&self, score: i16) -> Result<&Condition, RorschachError> {
+    pub fn evaluate(&self, score: i16) -> Result<Option<&Condition>, RorschachError> {
         let condition =
             self.conditions
                 .get(&score)
@@ -39,7 +40,7 @@ impl QuestionnaireItem {
                     score,
                     self.stem.clone().unwrap_or("NO-STEM".to_string()),
                 ))?;
-        Ok(condition)
+        Ok(condition.as_ref())
     }
 
     pub fn n_answers(&self) -> i16 {

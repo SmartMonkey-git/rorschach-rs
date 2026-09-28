@@ -18,7 +18,7 @@ pub(crate) fn hama() -> Result<Questionnaire, RorschachError> {
         (4, SeverityTerms::Profound),
     ];
     let builder = QuestionnaireBuilder::new(name, Box::new(SumScore))
-        .recall_period(Duration::weeks(0))
+        .recall_period(Duration::weeks(1))
         .interpretations(btreemap! {
             0  => Some(Condition::new_excluded(PhenotypeTerms::Mania)),
             5  => Some(Condition::new_excluded(PhenotypeTerms::Mania)),
@@ -28,80 +28,84 @@ pub(crate) fn hama() -> Result<Questionnaire, RorschachError> {
             56 => Some(Condition::without_time(PhenotypeTerms::Mania, SeverityTerms::Profound)),
         })
         .items([
-            QuestionnaireItemBuilder::new(5)
+            QuestionnaireItemBuilder::new(5, 5)
+                .stem("Anxious mood")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::Anxiety)
                         .build_with_severities(severities.as_slice(), true),
-                )
-                .stem("Anxious mood"),
-            QuestionnaireItemBuilder::new(5)
+                ),
+            QuestionnaireItemBuilder::new(5, 5)
+                .stem("Tension")
                 .conditions(
-                    ConditionBuilder::new(PhenotypeTerms::Agitation) // TODO: Does not fit well
+                    ConditionBuilder::new(PhenotypeTerms::Agitation)
                         .build_with_severities(severities.as_slice(), true),
-                )
-                .stem("Tension"),
-            QuestionnaireItemBuilder::new(5)
+                ),
+            QuestionnaireItemBuilder::new(5, 5)
+                .stem("Fears")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::Phobia)
                         .build_with_severities(severities.as_slice(), true),
-                )
-                .stem("Fears"),
-            QuestionnaireItemBuilder::new(5)
+                ),
+            QuestionnaireItemBuilder::new(5, 5)
+                .stem("Insomnia")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::Insomnia)
                         .build_with_severities(severities.as_slice(), true),
-                )
-                .stem("Insomnia"),
-            QuestionnaireItemBuilder::new(5)
+                ),
+            QuestionnaireItemBuilder::new(5, 5)
+                .stem("Intellectual")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::CognitiveImpairment)
                         .build_with_severities(severities.as_slice(), true),
-                )
-                .stem("Intellectual"),
-            QuestionnaireItemBuilder::new(5)
+                ),
+            QuestionnaireItemBuilder::new(5, 5)
+                .stem("Depressed mood")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::Depression)
                         .build_with_severities(severities.as_slice(), true),
-                )
-                .stem("Depressed mood"),
-            QuestionnaireItemBuilder::new(5).stem("Somatic (muscular)"),
-            QuestionnaireItemBuilder::new(5).stem("Somatic (sensory)"),
-            QuestionnaireItemBuilder::new(5)
+                ),
+            QuestionnaireItemBuilder::new(5, 5)
+                .stem("Somatic (muscular)")
+                .empty_conditions(),
+            QuestionnaireItemBuilder::new(5, 5)
+                .stem("Somatic (sensory)")
+                .empty_conditions(),
+            QuestionnaireItemBuilder::new(5, 5)
+                .stem("Cardiovascular symptoms")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::AbnormalityOfTheCardiovascularSystem)
                         .build_with_severities(severities.as_slice(), true),
-                )
-                .stem("Cardiovascular symptoms"),
-            QuestionnaireItemBuilder::new(5)
+                ),
+            QuestionnaireItemBuilder::new(5, 5)
+                .stem("Respiratory symptoms")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::AbnormalityOfTheRespiratorySystem)
                         .build_with_severities(severities.as_slice(), true),
-                )
-                .stem("Respiratory symptoms"),
-            QuestionnaireItemBuilder::new(5)
+                ),
+            QuestionnaireItemBuilder::new(5, 5)
+                .stem("Gastrointestinal symptoms")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::AbnormalityOfTheGastrointestinalTract)
                         .build_with_severities(severities.as_slice(), true),
-                )
-                .stem("Gastrointestinal symptoms"),
-            QuestionnaireItemBuilder::new(5)
+                ),
+            QuestionnaireItemBuilder::new(5, 5)
+                .stem("Genitourinary symptoms")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::AbnormalityOfTheGenitourinarySystem)
                         .build_with_severities(severities.as_slice(), true),
-                )
-                .stem("Genitourinary symptoms"),
-            QuestionnaireItemBuilder::new(5)
+                ),
+            QuestionnaireItemBuilder::new(5, 5)
+                .stem("Autonomic symptoms")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::AbnormalAutonomicNervousSystemPhysiology)
                         .build_with_severities(severities.as_slice(), true),
-                )
-                .stem("Autonomic symptoms"),
-            QuestionnaireItemBuilder::new(5)
+                ),
+            QuestionnaireItemBuilder::new(5, 5)
+                .stem("Behavior at interview")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::AtypicalBehavior)
                         .build_with_severities(severities.as_slice(), true),
-                )
-                .stem("Behavior at interview"),
+                ),
         ]);
 
     let builder = builder.map_err(|err| {

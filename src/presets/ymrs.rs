@@ -36,66 +36,72 @@ pub(crate) fn ymrs() -> Result<Questionnaire, RorschachError> {
             50 => Some(Condition::without_time(PhenotypeTerms::Mania, SeverityTerms::Profound)),
         })
         .items([
-            QuestionnaireItemBuilder::new(5)
+            QuestionnaireItemBuilder::new(5, 4)
                 .stem("Elevated Mood")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::Euphoria)
                         .build_with_severities(linear_severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(5)
+            QuestionnaireItemBuilder::new(5, 4)
                 .stem("Increased Motor Activity-Energy")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::Agitation)
                         .build_with_severities(linear_severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(5)
+            QuestionnaireItemBuilder::new(5, 4)
                 .stem("Sexual Interest")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::AmplificationOfSexualBehavior)
                         .build_with_severities(linear_severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(5).stem("Sleep").conditions(
-                ConditionBuilder::new(PhenotypeTerms::DecreasedNeedForSleep)
-                    .build_with_severities(linear_severities.as_slice(), true),
-            ),
-            QuestionnaireItemBuilder::new(5)
+            QuestionnaireItemBuilder::new(5, 4)
+                .stem("Sleep")
+                .conditions(
+                    ConditionBuilder::new(PhenotypeTerms::DecreasedNeedForSleep)
+                        .build_with_severities(linear_severities.as_slice(), true),
+                ),
+            QuestionnaireItemBuilder::new(5, 8)
                 .stem("Irritability")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::Irritability)
                         .build_with_severities(amplified_severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(5)
+            QuestionnaireItemBuilder::new(5, 8)
                 .stem("Speech (Rate and Amount)")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::PressuredSpeech)
                         .build_with_severities(amplified_severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(5)
+            QuestionnaireItemBuilder::new(5, 4)
                 .stem("Language-Thought Disorder")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::AbnormallyRapidThoughtProcess)
                         .build_with_severities(linear_severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(5).stem("Content").conditions(
-                ConditionBuilder::new(PhenotypeTerms::DisorderOfThoughtContent)
-                    .build_with_severities(amplified_severities.as_slice(), true),
-            ),
-            QuestionnaireItemBuilder::new(5)
+            QuestionnaireItemBuilder::new(5, 8)
+                .stem("Content")
+                .conditions(
+                    ConditionBuilder::new(PhenotypeTerms::DisorderOfThoughtContent)
+                        .build_with_severities(amplified_severities.as_slice(), true),
+                ),
+            QuestionnaireItemBuilder::new(5, 8)
                 .stem("Disruptive-Aggressive Behavior")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::AggressiveBehavior)
                         .build_with_severities(amplified_severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(5)
+            QuestionnaireItemBuilder::new(5, 4)
                 .stem("Appearance")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::SelfNeglect)
                         .build_with_severities(linear_severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(5).stem("Insight").conditions(
-                ConditionBuilder::new(PhenotypeTerms::LackOfInsight)
-                    .build_with_severities(linear_severities.as_slice(), true),
-            ),
+            QuestionnaireItemBuilder::new(5, 4)
+                .stem("Insight")
+                .conditions(
+                    ConditionBuilder::new(PhenotypeTerms::LackOfInsight)
+                        .build_with_severities(linear_severities.as_slice(), true),
+                ),
         ]);
 
     let builder = builder.map_err(|err| {

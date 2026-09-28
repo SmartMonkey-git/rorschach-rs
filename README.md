@@ -46,6 +46,7 @@ mappings, so `QuestionnairePresets::PHQ9.build()` always succeeds.
 ```rust
 use rorschach_rs::answer::Answer;
 use rorschach_rs::questionnaire_presets::QuestionnairePresets;
+use rorschach_rs::traits::ToCsv;
 
 fn main() {
     let phq9 = QuestionnairePresets::PHQ9.build();
@@ -68,17 +69,11 @@ fn main() {
         .expect("answers should match the instrument");
 
     println!("{result}"); // pretty-printed summary
+
+    let mut buf = Vec::new();
+    // `true` deduplicates repeated phenotypes, keeping the highest severity seen.
+    vec![result].to_csv(&mut buf, true).unwrap();
 }
-```
-
-## Exporting results to CSV
-
-```rust
-use rorschach_rs::traits::ToCsv;
-
-let mut buf = Vec::new();
-// `true` deduplicates repeated phenotypes, keeping the highest severity seen.
-vec![result].to_csv( & mut buf, true) ?;
 ```
 
 ## Defining a custom questionnaire
@@ -90,20 +85,22 @@ use rorschach_rs::questionnaire_item::QuestionnaireItem;
 use rorschach_rs::score_calculations::sum_score::SumScore;
 use rorschach_rs::term::{PhenotypeTerms, SeverityTerms};
 
-// Builders are returned by `Questionnaire::builder(..)`, `QuestionnaireItem::builder(..)`,
-// and `Condition::builder(..)` — chain directly off those, no separate import needed.
-let question = QuestionnaireItem::builder(4)
-.stem("Feeling nervous, anxious, or on edge")
-.condition(0, Condition::builder(PhenotypeTerms::Anxiety).exclude().build())
-.condition(3, Condition::builder(PhenotypeTerms::Anxiety).severity(SeverityTerms::Mild).build())
-.build()
-.expect("at least one condition was provided");
+fn main() {
+    // Builders are returned by `Questionnaire::builder(..)`, `QuestionnaireItem::builder(..)`,
+    // and `Condition::builder(..)` — chain directly off those, no separate import needed.
+    let question = QuestionnaireItem::builder(4, 4)
+        .stem("Feeling nervous, anxious, or on edge")
+        .condition(0, Condition::builder(PhenotypeTerms::Anxiety.into()).exclude().build())
+        .condition(3, Condition::builder(PhenotypeTerms::Anxiety.into()).severity(SeverityTerms::Mild).build())
+        .build()
+        .expect("at least one condition was provided");
 
-let questionnaire = Questionnaire::builder("My Scale", Box::new(SumScore))
-.interpretation(0, Condition::builder(PhenotypeTerms::Anxiety).exclude().build())
-.interpretation(5, Condition::builder(PhenotypeTerms::Anxiety).severity(SeverityTerms::Mild).build())
-.item(question)
-.build();
+    let questionnaire = Questionnaire::builder("My Scale", Box::new(SumScore))
+        .interpretation(0, Condition::builder(PhenotypeTerms::Anxiety.into()).exclude().build())
+        .interpretation(5, Condition::builder(PhenotypeTerms::Anxiety.into()).severity(SeverityTerms::Mild).build())
+        .item(question)
+        .build();
+}
 ```
 
 
