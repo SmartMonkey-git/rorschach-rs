@@ -1,6 +1,6 @@
 use rorschach_rs::answer::Answer;
 use rorschach_rs::questionnaire_presets::QuestionnairePresets;
-use rorschach_rs::term::{PhenotypeTerms, SeverityTerms};
+use rorschach_rs::term::{PhenotypeTerms, SeverityTerms, Term};
 use rorschach_rs::traits::AsTerm;
 
 #[test]
@@ -33,60 +33,50 @@ fn test_hama() {
     // One entry per item. `None` means "this item has no phenotype at all"
     // (items 6 and 7 never got a `.conditions(...)` call) -- distinct from a
     // phenotype that IS present but excluded (items 0, 5, 12 at score 0).
-    let expected: Vec<Option<(String, Option<String>)>> = vec![
-        Some((PhenotypeTerms::Anxiety.as_term().to_string(), None)),
+    let expected: Vec<Option<(Term, Option<Term>)>> = vec![
+        Some((PhenotypeTerms::Anxiety.as_term(), None)),
         Some((
-            PhenotypeTerms::Agitation.as_term().to_string(),
-            Some(SeverityTerms::Borderline.as_term().to_string()),
+            PhenotypeTerms::Agitation.as_term(),
+            Some(SeverityTerms::Borderline.as_term()),
         )),
         Some((
-            PhenotypeTerms::Phobia.as_term().to_string(),
-            Some(SeverityTerms::Moderate.as_term().to_string()),
+            PhenotypeTerms::Phobia.as_term(),
+            Some(SeverityTerms::Moderate.as_term()),
         )),
         Some((
-            PhenotypeTerms::Insomnia.as_term().to_string(),
-            Some(SeverityTerms::Moderate.as_term().to_string()),
+            PhenotypeTerms::Insomnia.as_term(),
+            Some(SeverityTerms::Moderate.as_term()),
         )),
         Some((
-            PhenotypeTerms::CognitiveImpairment.as_term().to_string(),
-            Some(SeverityTerms::Profound.as_term().to_string()),
+            PhenotypeTerms::CognitiveImpairment.as_term(),
+            Some(SeverityTerms::Profound.as_term()),
         )),
-        Some((PhenotypeTerms::Depression.as_term().to_string(), None)),
+        Some((PhenotypeTerms::Depression.as_term(), None)),
         None,
         None,
         Some((
-            PhenotypeTerms::AbnormalityOfTheCardiovascularSystem
-                .as_term()
-                .to_string(),
-            Some(SeverityTerms::Borderline.as_term().to_string()),
+            PhenotypeTerms::AbnormalityOfTheCardiovascularSystem.as_term(),
+            Some(SeverityTerms::Borderline.as_term()),
         )),
         Some((
-            PhenotypeTerms::AbnormalityOfTheRespiratorySystem
-                .as_term()
-                .to_string(),
-            Some(SeverityTerms::Moderate.as_term().to_string()),
+            PhenotypeTerms::AbnormalityOfTheRespiratorySystem.as_term(),
+            Some(SeverityTerms::Moderate.as_term()),
         )),
         Some((
-            PhenotypeTerms::AbnormalityOfTheGastrointestinalTract
-                .as_term()
-                .to_string(),
-            Some(SeverityTerms::Moderate.as_term().to_string()),
+            PhenotypeTerms::AbnormalityOfTheGastrointestinalTract.as_term(),
+            Some(SeverityTerms::Moderate.as_term()),
         )),
         Some((
-            PhenotypeTerms::AbnormalityOfTheGenitourinarySystem
-                .as_term()
-                .to_string(),
-            Some(SeverityTerms::Profound.as_term().to_string()),
+            PhenotypeTerms::AbnormalityOfTheGenitourinarySystem.as_term(),
+            Some(SeverityTerms::Profound.as_term()),
         )),
         Some((
-            PhenotypeTerms::AbnormalAutonomicNervousSystemPhysiology
-                .as_term()
-                .to_string(),
+            PhenotypeTerms::AbnormalAutonomicNervousSystemPhysiology.as_term(),
             None,
         )),
         Some((
-            PhenotypeTerms::AtypicalBehavior.as_term().to_string(),
-            Some(SeverityTerms::Borderline.as_term().to_string()),
+            PhenotypeTerms::AtypicalBehavior.as_term(),
+            Some(SeverityTerms::Borderline.as_term()),
         )),
     ];
 
@@ -103,10 +93,10 @@ fn test_hama() {
                 // item without a `ConditionBuilder` correctly produced no phenotype
             }
             (Some(condition), Some((exp_term, exp_severity))) => {
-                assert_eq!(condition.term().id(), exp_term, "wrong term at item {idx}");
+                assert_eq!(condition.term(), exp_term, "wrong term at item {idx}");
                 assert_eq!(
-                    &Some(condition.severity().unwrap().id().to_string()),
-                    exp_severity,
+                    condition.severity(),
+                    exp_severity.as_ref(),
                     "wrong severity at item {idx}"
                 );
                 assert_eq!(

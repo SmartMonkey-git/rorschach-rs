@@ -96,11 +96,12 @@ impl Questionnaire {
                     conditions.push(None);
                 }
                 Some(score) => {
-                    let mut eval_result = question.evaluate(score as i16)?.clone();
+                    let mut eval_result = question.evaluate(score as i16)?.cloned();
 
-                    self.set_time(&mut eval_result, taken_at);
-
-                    conditions.push(Some(eval_result));
+                    if let Some(eval_res) = eval_result.as_mut() {
+                        self.set_time(eval_res, taken_at);
+                    }
+                    conditions.push(eval_result);
                 }
             }
         }

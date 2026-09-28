@@ -25,7 +25,7 @@ fn test_gad7() {
     let expected_terms = [
         (PhenotypeTerms::Anxiety.as_term(), None),
         (
-            PhenotypeTerms::Anxiety.as_term(),
+            PhenotypeTerms::AnticipatoryAnxiety.as_term(),
             Some(SeverityTerms::Borderline.as_term()),
         ),
         (
@@ -42,7 +42,7 @@ fn test_gad7() {
             Some(SeverityTerms::Borderline.as_term()),
         ),
         (
-            PhenotypeTerms::AnticipatoryAnxiety.as_term(),
+            PhenotypeTerms::SenseOfImpendingDoom.as_term(),
             Some(SeverityTerms::Moderate.as_term()),
         ),
     ];

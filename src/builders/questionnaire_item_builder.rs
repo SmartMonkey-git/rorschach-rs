@@ -6,7 +6,7 @@ use std::collections::HashMap;
 pub struct QuestionnaireItemBuilder {
     stem: Option<String>,
     //  Score and Condition
-    conditions: HashMap<i16, Condition>,
+    conditions: HashMap<i16, Option<Condition>>,
     n_answers: i16,
 }
 
@@ -25,13 +25,41 @@ impl QuestionnaireItemBuilder {
     }
 
     pub fn condition(mut self, score: i16, condition: impl Into<Condition>) -> Self {
-        self.conditions.insert(score, condition.into());
+        let condition = condition.into();
+        if score > self.n_answers {
+            panic!(
+                "Score {score} is too high for {condition}; the maximum allowed score is {}",
+                self.n_answers
+            );
+        }
+        self.conditions.insert(score, Some(condition));
 
         self
     }
 
     pub fn conditions(mut self, conditions: HashMap<i16, Condition>) -> Self {
+        conditions.iter().for_each(|(score, condition)| {
+            if score > &self.n_answers {
+                panic!(
+                    "Score {score} is too high for {condition}; the maximum allowed score is {}",
+                    self.n_answers
+                );
+            }
+        });
+
+        let conditions: HashMap<i16, Option<Condition>> = conditions
+            .into_iter()
+            .map(|(score, condition)| (score, Some(condition)))
+            .collect();
+
         self.conditions = conditions;
+        self
+    }
+
+    pub fn empty_conditions(mut self) -> Self {
+        self.conditions =
+            HashMap::from_iter((0..self.n_answers).into_iter().map(|idx| (idx, None)));
+
         self
     }
 
