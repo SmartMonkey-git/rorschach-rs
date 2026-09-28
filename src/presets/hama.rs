@@ -28,75 +28,79 @@ pub(crate) fn hama() -> Result<Questionnaire, RorschachError> {
             56 => Some(Condition::without_time(PhenotypeTerms::Mania, SeverityTerms::Profound)),
         })
         .items([
-            QuestionnaireItemBuilder::new(5)
+            QuestionnaireItemBuilder::new(5, 5)
                 .stem("Anxious mood")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::Anxiety)
                         .build_with_severities(severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(5).stem("Tension").conditions(
-                ConditionBuilder::new(PhenotypeTerms::Agitation)
-                    .build_with_severities(severities.as_slice(), true),
-            ),
-            QuestionnaireItemBuilder::new(5).stem("Fears").conditions(
-                ConditionBuilder::new(PhenotypeTerms::Phobia)
-                    .build_with_severities(severities.as_slice(), true),
-            ),
-            QuestionnaireItemBuilder::new(5)
+            QuestionnaireItemBuilder::new(5, 5)
+                .stem("Tension")
+                .conditions(
+                    ConditionBuilder::new(PhenotypeTerms::Agitation)
+                        .build_with_severities(severities.as_slice(), true),
+                ),
+            QuestionnaireItemBuilder::new(5, 5)
+                .stem("Fears")
+                .conditions(
+                    ConditionBuilder::new(PhenotypeTerms::Phobia)
+                        .build_with_severities(severities.as_slice(), true),
+                ),
+            QuestionnaireItemBuilder::new(5, 5)
                 .stem("Insomnia")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::Insomnia)
                         .build_with_severities(severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(5)
+            QuestionnaireItemBuilder::new(5, 5)
                 .stem("Intellectual")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::CognitiveImpairment)
                         .build_with_severities(severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(5)
+            QuestionnaireItemBuilder::new(5, 5)
                 .stem("Depressed mood")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::Depression)
                         .build_with_severities(severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(5)
+            QuestionnaireItemBuilder::new(5, 5)
                 .stem("Somatic (muscular)")
                 .empty_conditions(),
-            QuestionnaireItemBuilder::new(5)
+            QuestionnaireItemBuilder::new(5, 5)
                 .stem("Somatic (sensory)")
                 .empty_conditions(),
-            QuestionnaireItemBuilder::new(5)
+            QuestionnaireItemBuilder::new(5, 5)
                 .stem("Cardiovascular symptoms")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::AbnormalityOfTheCardiovascularSystem)
                         .build_with_severities(severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(5)
+            QuestionnaireItemBuilder::new(5, 5)
                 .stem("Respiratory symptoms")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::AbnormalityOfTheRespiratorySystem)
                         .build_with_severities(severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(5)
+            QuestionnaireItemBuilder::new(5, 5)
                 .stem("Gastrointestinal symptoms")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::AbnormalityOfTheGastrointestinalTract)
                         .build_with_severities(severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(5)
+            QuestionnaireItemBuilder::new(5, 5)
                 .stem("Genitourinary symptoms")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::AbnormalityOfTheGenitourinarySystem)
                         .build_with_severities(severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(5)
+            QuestionnaireItemBuilder::new(5, 5)
                 .stem("Autonomic symptoms")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::AbnormalAutonomicNervousSystemPhysiology)
                         .build_with_severities(severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(5)
+            QuestionnaireItemBuilder::new(5, 5)
                 .stem("Behavior at interview")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::AtypicalBehavior)

@@ -8,14 +8,16 @@ pub struct QuestionnaireItemBuilder {
     //  Score and Condition
     conditions: HashMap<i16, Option<Condition>>,
     n_answers: i16,
+    max_score: i16,
 }
 
 impl QuestionnaireItemBuilder {
-    pub fn new(n_answers: i16) -> Self {
+    pub fn new(n_answers: i16, max_score: i16) -> Self {
         Self {
             stem: None,
             conditions: HashMap::new(),
             n_answers,
+            max_score,
         }
     }
 
@@ -26,10 +28,10 @@ impl QuestionnaireItemBuilder {
 
     pub fn condition(mut self, score: i16, condition: impl Into<Condition>) -> Self {
         let condition = condition.into();
-        if score > self.n_answers {
+        if score > self.max_score {
             panic!(
                 "Score {score} is too high for {condition}; the maximum allowed score is {}",
-                self.n_answers
+                self.max_score
             );
         }
         self.conditions.insert(score, Some(condition));
@@ -39,10 +41,10 @@ impl QuestionnaireItemBuilder {
 
     pub fn conditions(mut self, conditions: HashMap<i16, Condition>) -> Self {
         conditions.iter().for_each(|(score, condition)| {
-            if score > &self.n_answers {
+            if score > &self.max_score {
                 panic!(
                     "Score {score} is too high for {condition}; the maximum allowed score is {}",
-                    self.n_answers
+                    self.max_score
                 );
             }
         });
@@ -69,7 +71,7 @@ impl QuestionnaireItemBuilder {
 }
 
 impl QuestionnaireItem {
-    pub fn builder(n_answers: i16) -> QuestionnaireItemBuilder {
-        QuestionnaireItemBuilder::new(n_answers)
+    pub fn builder(n_answers: i16, max_score: i16) -> QuestionnaireItemBuilder {
+        QuestionnaireItemBuilder::new(n_answers, max_score)
     }
 }

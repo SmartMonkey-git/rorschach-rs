@@ -29,43 +29,43 @@ pub(crate) fn gad7() -> Result<Questionnaire, RorschachError> {
             20 => Some(Condition::without_time(PhenotypeTerms::Anxiety, SeverityTerms::Profound)),
         })
         .items([
-            QuestionnaireItemBuilder::new(4)
+            QuestionnaireItemBuilder::new(4, 5)
                 .stem("Feeling nervous, anxious, or on edge")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::Anxiety)
                         .build_with_severities(severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(4)
+            QuestionnaireItemBuilder::new(4, 5)
                 .stem("Not being able to stop or control worrying") // TODO: Needs to get its own phenotype, current one is wrong
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::AnticipatoryAnxiety)
                         .build_with_severities(severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(4)
+            QuestionnaireItemBuilder::new(4, 5)
                 .stem("Worrying too much about different things")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::Ruminations)
                         .build_with_severities(severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(4)
+            QuestionnaireItemBuilder::new(4, 5)
                 .stem("Trouble relaxing")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::Agitation)
                         .build_with_severities(severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(4)
+            QuestionnaireItemBuilder::new(4, 5)
                 .stem("Being so restless that it is hard to sit still")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::Restlessness)
                         .build_with_severities(severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(4)
+            QuestionnaireItemBuilder::new(4, 5)
                 .stem("Becoming easily annoyed or irritable")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::Irritability)
                         .build_with_severities(severities.as_slice(), true),
                 ),
-            QuestionnaireItemBuilder::new(4)
+            QuestionnaireItemBuilder::new(4, 5)
                 .stem("Feeling afraid, as if something awful might happen")
                 .conditions(
                     ConditionBuilder::new(PhenotypeTerms::SenseOfImpendingDoom)
