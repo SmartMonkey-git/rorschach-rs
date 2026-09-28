@@ -5,6 +5,7 @@ pub mod condition;
 pub mod error;
 
 mod builders;
+pub mod config;
 mod presets;
 pub mod questionnaire;
 pub mod questionnaire_item;
