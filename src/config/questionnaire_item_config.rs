@@ -1,8 +1,6 @@
-use crate::condition;
 use crate::condition::Condition;
 use crate::config::condition_config::ConditionConfig;
 use crate::config::error::ConfigError;
-use crate::error::RorschachError;
 use crate::questionnaire_item::QuestionnaireItem;
 use serde_derive::Deserialize;
 use std::collections::HashMap;
@@ -24,7 +22,7 @@ impl TryFrom<&QuestionnaireItemConfig> for QuestionnaireItem {
             .iter()
             .map(|(s, condition)| {
                 let condition: Option<Condition> = condition.as_ref().map(|c| c.into());
-                (s.clone(), condition)
+                (*s, condition)
             })
             .collect();
 

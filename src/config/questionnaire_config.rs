@@ -1,9 +1,9 @@
+#![allow(clippy::result_large_err)]
 use crate::condition::Condition;
 use crate::config::condition_config::ConditionConfig;
 use crate::config::error::ConfigError;
 use crate::config::questionnaire_item_config::QuestionnaireItemConfig;
 use crate::config::score_calculation_config::ScoreCalculatorConfig;
-use crate::error::RorschachError;
 use crate::questionnaire::Questionnaire;
 use crate::questionnaire_item::QuestionnaireItem;
 use crate::score_calculations::prorated_score::ProratedScore;
