@@ -1,6 +1,6 @@
-use crate::answer::{Answer, QuestionnaireResponse};
 use crate::data_loader::data_file_type::DataFileType;
 use crate::data_loader::error::DataLoaderError;
+use crate::questionnaire_response::{Answer, QuestionnaireResponse};
 use calamine::{Data, Reader, open_workbook_auto};
 use chrono::{DateTime, NaiveDate, NaiveDateTime, TimeDelta, Utc};
 use std::path::Path;

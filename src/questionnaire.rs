@@ -1,7 +1,7 @@
-use crate::answer::QuestionnaireResponse;
 use crate::condition::Condition;
 use crate::error::RorschachError;
 use crate::questionnaire_item::QuestionnaireItem;
+use crate::questionnaire_response::QuestionnaireResponse;
 use crate::questionnaire_result::QuestionnaireResult;
 use crate::traits::CalculateScore;
 use chrono::{DateTime, Duration, Utc};

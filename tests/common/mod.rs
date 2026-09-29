@@ -4,9 +4,9 @@ pub mod xpt_writer;
 
 use chrono::{DateTime, TimeZone, Utc};
 
-use rorschach_rs::answer::QuestionnaireResponse;
 use rorschach_rs::data_loader::error::DataLoaderError;
 use rorschach_rs::data_loader::questionnaire_data_loader::QuestionnaireDataLoader;
+use rorschach_rs::questionnaire_response::QuestionnaireResponse;
 use std::path::{Path, PathBuf};
 use tempfile::TempDir;
 

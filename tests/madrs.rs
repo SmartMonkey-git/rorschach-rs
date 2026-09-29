@@ -1,5 +1,5 @@
-use rorschach_rs::answer::{Answer, QuestionnaireResponse};
 use rorschach_rs::questionnaire_presets::QuestionnairePresets;
+use rorschach_rs::questionnaire_response::{Answer, QuestionnaireResponse};
 use rorschach_rs::term::{PhenotypeTerms, SeverityTerms};
 use rorschach_rs::traits::AsTerm;
 
