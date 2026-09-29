@@ -44,9 +44,10 @@ mappings, so `QuestionnairePresets::PHQ9.build()` always succeeds.
 ## Quick start
 
 ```rust
-use rorschach_rs::answer::Answer;
 use rorschach_rs::questionnaire_presets::QuestionnairePresets;
 use rorschach_rs::traits::ToCsv;
+use rorschach_rs::questionnaire_response::QuestionnaireResponse;
+use rorschach_rs::questionnaire_response::Answer;
 
 fn main() {
     let phq9 = QuestionnairePresets::PHQ9.build();
@@ -65,7 +66,7 @@ fn main() {
     ];
 
     let result = phq9
-        .evaluate("phq9-2026-07-13", &answers, None)
+        .evaluate("phq9-2026-07-13", QuestionnaireResponse::new(answers, None))
         .expect("answers should match the instrument");
 
     println!("{result}"); // pretty-printed summary

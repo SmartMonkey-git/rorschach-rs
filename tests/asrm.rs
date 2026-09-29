@@ -1,5 +1,5 @@
-use rorschach_rs::answer::Answer;
 use rorschach_rs::questionnaire_presets::QuestionnairePresets;
+use rorschach_rs::questionnaire_response::{Answer, QuestionnaireResponse};
 use rorschach_rs::term::{PhenotypeTerms, SeverityTerms};
 use rorschach_rs::traits::AsTerm;
 #[test]
@@ -17,7 +17,8 @@ fn test_asrm() {
         Answer::new(4, Some(4.0)),
     ];
 
-    let res = asrm.evaluate("some_id", answers.as_ref(), None).unwrap();
+    let response = QuestionnaireResponse::new(answers, None);
+    let res = asrm.evaluate("some_id", response).unwrap();
 
     let expected_terms = [
         (PhenotypeTerms::Euphoria.as_term(), None),

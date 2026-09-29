@@ -1,5 +1,5 @@
-use rorschach_rs::answer::Answer;
 use rorschach_rs::questionnaire_presets::QuestionnairePresets;
+use rorschach_rs::questionnaire_response::{Answer, QuestionnaireResponse};
 use rorschach_rs::term::{PhenotypeTerms, SeverityTerms};
 use rorschach_rs::traits::AsTerm;
 
@@ -22,8 +22,9 @@ fn test_madrs() {
         Answer::new(8, Some(1.0)),
         Answer::new(9, Some(2.0)),
     ];
+    let response = QuestionnaireResponse::new(answers, None);
 
-    let res = madrs.evaluate("some_id", answers.as_ref(), None).unwrap();
+    let res = madrs.evaluate("some_id", response).unwrap();
 
     let expected_terms = [
         (PhenotypeTerms::PathologicalSadness.as_term(), None),

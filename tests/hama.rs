@@ -1,5 +1,5 @@
-use rorschach_rs::answer::Answer;
 use rorschach_rs::questionnaire_presets::QuestionnairePresets;
+use rorschach_rs::questionnaire_response::{Answer, QuestionnaireResponse};
 use rorschach_rs::term::{PhenotypeTerms, SeverityTerms, Term};
 use rorschach_rs::traits::AsTerm;
 
@@ -27,8 +27,9 @@ fn test_hama() {
         Answer::new(12, Some(0.0)), // Autonomic             -> excluded
         Answer::new(13, Some(1.0)), // Behavior at interview -> Borderline
     ];
+    let response = QuestionnaireResponse::new(answers, None);
 
-    let res = hama.evaluate("some_id", answers.as_ref(), None).unwrap();
+    let res = hama.evaluate("some_id", response).unwrap();
 
     // One entry per item. `None` means "this item has no phenotype at all"
     // (items 6 and 7 never got a `.conditions(...)` call) -- distinct from a

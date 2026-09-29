@@ -1,7 +1,7 @@
-use crate::answer::Answer;
 use crate::condition::Condition;
 use crate::error::RorschachError;
 use crate::questionnaire_item::QuestionnaireItem;
+use crate::questionnaire_response::QuestionnaireResponse;
 use crate::questionnaire_result::QuestionnaireResult;
 use crate::traits::CalculateScore;
 use chrono::{DateTime, Duration, Utc};
@@ -65,18 +65,17 @@ impl Questionnaire {
     pub fn evaluate(
         &self,
         questionnaire_id: &str,
-        answers: &[Answer],
-        taken_at: Option<&DateTime<Utc>>,
+        response: QuestionnaireResponse,
     ) -> Result<QuestionnaireResult, RorschachError> {
-        if answers.len() != self.items.len() {
+        if response.answers().len() != self.items.len() {
             return Err(RorschachError::AnswerQuestionMismatch {
                 test_name: self.name.to_string(),
                 expected: self.items.len(),
-                found: answers.len(),
+                found: response.answers().len(),
             });
         }
 
-        let item_scores: Vec<Option<f32>> = answers.iter().map(|a| a.score()).collect();
+        let item_scores: Vec<Option<f32>> = response.answers().iter().map(|a| a.score()).collect();
         let total_score = self.score_calculator.calculate_score(&item_scores);
 
         let max_score = self.max_score();
@@ -90,7 +89,7 @@ impl Questionnaire {
         }
 
         let mut conditions: Vec<Option<Condition>> = Vec::new();
-        for (answer, question) in answers.iter().zip(self.items.iter()) {
+        for (answer, question) in response.answers().iter().zip(self.items.iter()) {
             match answer.score() {
                 None => {
                     conditions.push(None);
@@ -99,7 +98,7 @@ impl Questionnaire {
                     let mut eval_result = question.evaluate(score as i16)?.cloned();
 
                     if let Some(eval_res) = eval_result.as_mut() {
-                        self.set_time(eval_res, taken_at);
+                        self.set_time(eval_res, response.taken_at());
                     }
                     conditions.push(eval_result);
                 }
@@ -108,14 +107,14 @@ impl Questionnaire {
 
         //let diagnosis = self.get_diagnosis(total_score, taken_at)?;
         //conditions.push(diagnosis);
-        let diagnosis = self.get_diagnosis(total_score, taken_at)?;
+        let diagnosis = self.get_diagnosis(total_score, response.taken_at())?;
         let result = QuestionnaireResult::new(
             None::<String>,
             questionnaire_id,
             &self.name,
             diagnosis,
             conditions,
-            taken_at,
+            response.taken_at(),
         );
 
         Ok(result)

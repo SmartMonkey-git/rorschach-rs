@@ -17,6 +17,8 @@ csv = "1.3"
 figment = { version = "0.10.19", optional = true, features = ["yaml"] }
 serde = { version = "1.0.229", optional = true }
 serde_derive = { version = "1.0.229", optional = true }
+calamine = { version = "0.36.1", features = ["chrono"] }
+
 
 [features]
 config = ["dep:figment", "dep:serde", "dep:serde_derive"]
@@ -24,3 +26,5 @@ config = ["dep:figment", "dep:serde", "dep:serde_derive"]
 [dev-dependencies]
 ontology-registry = "0.4.2"
 ontolius = "0.7.4"
+tempfile = "3.27.0"
+rust_xlsxwriter = "0.99.1"
