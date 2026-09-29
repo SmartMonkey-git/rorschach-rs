@@ -1,4 +1,4 @@
-use rorschach_rs::answer::Answer;
+use rorschach_rs::answer::{Answer, QuestionnaireResponse};
 use rorschach_rs::questionnaire_presets::QuestionnairePresets;
 use rorschach_rs::term::{PhenotypeTerms, SeverityTerms};
 use rorschach_rs::traits::AsTerm;
@@ -22,8 +22,9 @@ fn test_ymrs() {
         Answer::new(9, Some(0.0)),
         Answer::new(10, Some(1.0)),
     ];
+    let response = QuestionnaireResponse::new(answers, None);
 
-    let res = ymrs.evaluate("some_id", answers.as_ref(), None).unwrap();
+    let res = ymrs.evaluate("some_id", response).unwrap();
 
     let expected_terms = vec![
         (PhenotypeTerms::Euphoria.as_term(), None),
